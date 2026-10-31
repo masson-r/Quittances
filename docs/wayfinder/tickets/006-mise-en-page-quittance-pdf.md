@@ -2,7 +2,7 @@
 title: Mise en page de la quittance et du reçu partiel en PDF
 type: prototype
 status: open
-assignee:
+assignee: massonr
 blocked_by:
   - 001-cadre-legal-quittances.md
 ---
