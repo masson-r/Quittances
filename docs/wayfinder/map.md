@@ -31,11 +31,13 @@ La **proposition initiale validée** du README §17 : architecture technique, mo
 - [Obligations RGPD et hébergement des données](tickets/002-rgpd-et-hebergement.md) : propriétaire responsable de traitement et éditeur sous-traitant (accord art. 28) ; date de naissance facultative ; archive de 3 ans après clôture ; Supabase Paris et Vercel `cdg1` à fixer explicitement.
 - [Règles financières des échéances, paiements et soldes](tickets/003-regles-financieres.md) : échéance créée à sa date d'échéance, sans génération à l'avance ni statut « À venir » ; prorata en jours réels arrondi au centime ; affectation proposée puis validée ; corrections tracées et annulations conservées ; quittance sur action explicite avec dates modifiables.
 - [Matrice des autorisations et stratégie RLS](tickets/004-matrice-autorisations.md) : trois rôles fixes (gestionnaire = tout l'opérationnel, administrateur = en plus structure, membres, audit, lecteur = consultation) ; RLS partout sans suppression sur le financier ; champs sensibles en tables séparées ; droits relus à chaque requête ; fichiers par route serveur et lien de 60 secondes ; structures créées par l'opérateur.
+- [Parcours d'inscription et de rattachement du locataire](tickets/005-parcours-rattachement-locataire.md) : lien privé à usage unique de 14 jours pour membres et locataires ; demande « en attente » validée par le propriétaire, jamais sur e-mail seul ; consentement horodaté à la remise dématérialisée ; un profil pour plusieurs dossiers, un dossier pour un profil actif ; pas de révocation automatique.
 
 ## Not yet specified
 
 - **Indicateurs du tableau de bord** : définition précise de « loyers appelés », « encaissé », « solde estimé » et des comparaisons par bien, une fois les règles financières fixées.
 - **Dépenses et apurement des charges** : catégories, statuts, justificatifs, traitement comptable simple de l'apurement, et sort d'un montant non affecté à rembourser au locataire.
+- **Authentification forte des membres** : faut-il une double authentification (TOTP) pour l'administrateur et le gestionnaire, à trancher avec l'architecture.
 - **Journal d'audit** : liste exacte des opérations journalisées et contenu des entrées.
 - **Migrations initiales** : découpage en fichiers SQL et ordre, une fois le modèle relationnel arrêté.
 - **Registre des risques et backlog final** : tickets du backlog (Lots 0 à 6), dépendances et critères d'acceptation, à rédiger quand toutes les décisions sont prises.

@@ -75,9 +75,13 @@ Document attestant un paiement incomplet ; il n'est jamais une quittance.
 _Avoid_: Quittance partielle
 
 **Invitation** (`invitations`) :
-Code ou lien à usage unique, limité dans le temps et révocable, permettant à un locataire de demander son rattachement.
-_Avoid_: Lien d'inscription
+Lien privé à usage unique, valable 14 jours et révocable, qui permet à un futur membre ou à un locataire de s'engager vers une structure ou un dossier.
+_Avoid_: Lien d'inscription, code
+
+**Demande de rattachement** :
+Requête en attente d'un profil, créée en utilisant l'invitation d'un locataire, que le propriétaire valide ou refuse ; elle expire après 30 jours.
+_Avoid_: Inscription
 
 **Rattachement** (`tenant_account_links`) :
-Association validée par le propriétaire entre un profil et un dossier locataire ; jamais automatique.
+Association validée par le propriétaire entre un profil et un dossier locataire ; jamais automatique, révocable à tout moment par le propriétaire ou le locataire.
 _Avoid_: Liaison, appariement par e-mail
