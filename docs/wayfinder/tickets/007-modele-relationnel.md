@@ -14,3 +14,5 @@ blocked_by:
 ## Question
 
 Quel est le diagramme relationnel final ? À trancher avec l'utilisateur : tables du README §7 et ajouts nécessaires, clés étrangères et règles de suppression, contraintes d'unicité (une échéance par bail et période), types des montants (centimes entiers) et des dates (sémantique métier, UTC technique), ce qui est stocké et ce qui est calculé (soldes et statuts), instantané des quittances, champs soumis à minimisation RGPD, et ce que chaque politique RLS doit pouvoir exprimer.
+
+Faits issus du ticket clos sur le RGPD : date de naissance facultative et absente des quittances ; garants limités au décret 2015-1437 ; `audit_logs` par identifiants sans données personnelles recopiées ; archive restreinte de 3 ans après clôture, puis purge ou anonymisation.
