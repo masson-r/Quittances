@@ -29,11 +29,12 @@ La **proposition initiale validée** du README §17 : architecture technique, mo
 
 - [Cadre légal des quittances et mentions obligatoires](tickets/001-cadre-legal-quittances.md) : la loi n'impose que le détail loyer et charges ; reçu partiel distinct de la quittance ; remise gratuite sur demande, dématérialisée avec accord exprès à stocker ; espèces plafonnées à 1 000 € ; une quittance par bail cohérente.
 - [Obligations RGPD et hébergement des données](tickets/002-rgpd-et-hebergement.md) : propriétaire responsable de traitement et éditeur sous-traitant (accord art. 28) ; date de naissance facultative ; archive de 3 ans après clôture ; Supabase Paris et Vercel `cdg1` à fixer explicitement.
+- [Règles financières des échéances, paiements et soldes](tickets/003-regles-financieres.md) : échéance créée à sa date d'échéance, sans génération à l'avance ni statut « À venir » ; prorata en jours réels arrondi au centime ; affectation proposée puis validée ; corrections tracées et annulations conservées ; quittance sur action explicite avec dates modifiables.
 
 ## Not yet specified
 
 - **Indicateurs du tableau de bord** : définition précise de « loyers appelés », « encaissé », « solde estimé » et des comparaisons par bien, une fois les règles financières fixées.
-- **Dépenses et apurement des charges** : catégories, statuts, justificatifs, traitement comptable simple de l'apurement.
+- **Dépenses et apurement des charges** : catégories, statuts, justificatifs, traitement comptable simple de l'apurement, et sort d'un montant non affecté à rembourser au locataire.
 - **Journal d'audit** : liste exacte des opérations journalisées et contenu des entrées.
 - **Migrations initiales** : découpage en fichiers SQL et ordre, une fois le modèle relationnel arrêté.
 - **Registre des risques et backlog final** : tickets du backlog (Lots 0 à 6), dépendances et critères d'acceptation, à rédiger quand toutes les décisions sont prises.

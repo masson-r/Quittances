@@ -37,7 +37,7 @@ _Avoid_: Tarif, révision
 ## Finances
 
 **Échéance** (`rent_charges`) :
-Somme exigible d'un bail pour une période, unique par bail et période, dont le solde et le statut sont calculés.
+Somme exigible d'un bail pour un mois civil, créée automatiquement à sa date d'échéance, unique par bail et période (hors annulées), dont le solde et le statut sont calculés.
 _Avoid_: Appel de loyer, facture, loyer dû
 
 **Paiement** (`payments`) :
