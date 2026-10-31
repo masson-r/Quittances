@@ -18,3 +18,5 @@ Quel est le diagramme relationnel final ? À trancher avec l'utilisateur : table
 Faits issus du ticket clos sur le RGPD : date de naissance facultative et absente des quittances ; garants limités au décret 2015-1437 ; `audit_logs` par identifiants sans données personnelles recopiées ; archive restreinte de 3 ans après clôture, puis purge ou anonymisation.
 
 Décisions issues du ticket clos sur les règles financières : statut « annulée » sur les échéances avec unicité (bail, période) limitée aux non annulées (index partiel) ; annulations de paiements et de quittances conservées avec motif ; montants en centimes entiers ; aucune échéance créée avant sa date d'échéance.
+
+Décisions issues du ticket clos sur les autorisations : table `role_permissions` et fonction `has_permission` ; champs sensibles (codes d'accès, garant, aide au logement, date de naissance) dans des tables séparées ; aucune politique de suppression sur les tables financières et documentaires ; chemin des fichiers `{structure}/{bail}/{document}.pdf` ; une structure garde au moins un administrateur actif ; les invitations couvrent membres et locataires.

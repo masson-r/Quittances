@@ -12,6 +12,10 @@ _Avoid_: Propriétaire (ambigu : désigne aussi la personne), compte, société
 Lien entre un utilisateur et une structure propriétaire, portant son rôle (administrateur, gestionnaire, lecteur, locataire) et son statut d'accès.
 _Avoid_: Droit global, rôle du profil
 
+**Opérateur** :
+Personne qui exploite l'application et crée les structures ; il n'a aucun accès aux données d'une structure dont il n'est pas membre.
+_Avoid_: Super-administrateur, administrateur global
+
 **Profil** (`profiles`) :
 Identité applicative d'un utilisateur authentifié, distincte de tout dossier locataire et de toute structure.
 _Avoid_: Compte (désigne l'authentification), utilisateur
