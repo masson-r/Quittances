@@ -27,6 +27,8 @@ La **proposition initiale validée** du README §17 : architecture technique, mo
 
 <!-- une ligne par ticket fermé : [titre](lien) : gist de la réponse -->
 
+- [Cadre légal des quittances et mentions obligatoires](tickets/001-cadre-legal-quittances.md) : la loi n'impose que le détail loyer et charges ; reçu partiel distinct de la quittance ; remise gratuite sur demande, dématérialisée avec accord exprès à stocker ; espèces plafonnées à 1 000 € ; une quittance par bail cohérente.
+
 ## Not yet specified
 
 - **Indicateurs du tableau de bord** : définition précise de « loyers appelés », « encaissé », « solde estimé » et des comparaisons par bien, une fois les règles financières fixées.

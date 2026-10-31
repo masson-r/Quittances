@@ -16,3 +16,4 @@ Quelles sont les règles financières exactes du système ? À trancher avec l'u
 - calcul du solde et des statuts (à venir, à payer, partiellement payée, payée, en retard) et jour de bascule en retard ;
 - annulation par écriture inverse d'un paiement et conséquences sur les affectations ;
 - conditions d'émission d'une quittance (échéance intégralement réglée) et date de paiement affichée en cas de paiements multiples.
+- plafond légal des paiements en espèces (1 000 € pour un débiteur domicilié en France, voir le ticket clos sur le cadre légal) : simple avertissement ou blocage à la saisie.
