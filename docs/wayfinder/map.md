@@ -11,6 +11,7 @@ La **proposition initiale validée** du README §17 : architecture technique, mo
 
 - Domaine : gestion locative française, habitation, multi-propriétaires. Source de vérité du besoin : [README.md](../../README.md). Vocabulaire : [GLOSSARY.md](../../GLOSSARY.md).
 - Langue : conversation, prose, tickets et glossaire en **français** ; identifiants de base de données en **anglais** (correspondance dans le glossaire).
+- Livrable consolidé : [docs/proposition-initiale.md](../proposition-initiale.md), assemblé à partir des tickets clos, avec cinq ADR dans `docs/adr`, à valider par l'utilisateur avant tout code.
 - Tracker : **markdown local**. Un ticket est un fichier `docs/wayfinder/tickets/NNN-slug.md` avec en en-tête `type`, `status` (`open` ou `closed`), `assignee` (la réclamation) et `blocked_by` (liste de fichiers). La frontière est l'ensemble des tickets `open`, sans `assignee`, dont tous les `blocked_by` sont `closed`.
 - Planifier, ne pas faire : chaque ticket produit une décision. Les prototypes sont jetables et ne rejoignent jamais l'application. Un prototype est autorisé surtout pour la mise en page de la quittance PDF (l'utilisateur veut un exemple).
 - Décisions de cadrage (prises pendant la définition de la destination, hors tickets) :
