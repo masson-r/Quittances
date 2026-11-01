@@ -32,6 +32,7 @@ La **proposition initiale validée** du README §17 : architecture technique, mo
 - [Règles financières des échéances, paiements et soldes](tickets/003-regles-financieres.md) : échéance créée à sa date d'échéance, sans génération à l'avance ni statut « À venir » ; prorata en jours réels arrondi au centime ; affectation proposée puis validée ; corrections tracées et annulations conservées ; quittance sur action explicite avec dates modifiables.
 - [Matrice des autorisations et stratégie RLS](tickets/004-matrice-autorisations.md) : trois rôles fixes (gestionnaire = tout l'opérationnel, administrateur = en plus structure, membres, audit, lecteur = consultation) ; RLS partout sans suppression sur le financier ; champs sensibles en tables séparées ; droits relus à chaque requête ; fichiers par route serveur et lien de 60 secondes ; structures créées par l'opérateur.
 - [Parcours d'inscription et de rattachement du locataire](tickets/005-parcours-rattachement-locataire.md) : lien privé à usage unique de 14 jours pour membres et locataires ; demande « en attente » validée par le propriétaire, jamais sur e-mail seul ; consentement horodaté à la remise dématérialisée ; un profil pour plusieurs dossiers, un dossier pour un profil actif ; pas de révocation automatique.
+- [Mise en page de la quittance et du reçu partiel en PDF](tickets/006-mise-en-page-quittance-pdf.md) : variante C (relevé compact avec frise et jauge) retenue ; image de signature téléversée par le propriétaire, mention « signé électroniquement » et identifiant du document.
 
 ## Not yet specified
 

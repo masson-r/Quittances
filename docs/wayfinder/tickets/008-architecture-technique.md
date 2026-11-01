@@ -17,3 +17,5 @@ Faits issus du ticket clos sur le RGPD : Supabase `eu-west-3` (Paris) et Vercel 
 Décisions issues du ticket clos sur les autorisations : module serveur isolé pour `service_role` (trois usages) ; route serveur de téléchargement avec lien de 60 secondes et aucune politique Storage pour le navigateur ; droits relus en base à chaque requête ; création des structures par script ou page d'administration minimale de l'opérateur ; support par accès direct à la base, à documenter pour la production.
 
 Décisions issues du ticket clos sur le rattachement : limitation de débit à 10 tentatives par heure par IP et par profil sur la consommation des liens ; message d'erreur unique pour les liens invalides ; expiration des demandes à 30 jours (traitement automatique idempotent, comme la création des échéances) ; seuls e-mails envoyés : authentification (fournisseur d'e-mail à choisir).
+
+Décisions issues du ticket clos sur la mise en page PDF : le PDF est généré côté serveur selon la variante C (colonnes, frise, jauge) avec une image de signature lue depuis le bucket privé ; validation du type et de la taille de l'image à l'envoi.

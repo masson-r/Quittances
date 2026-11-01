@@ -68,7 +68,11 @@ _Avoid_: Régularisation des charges (désigne le calcul avancé, hors périmèt
 
 **Quittance** (`receipts`) :
 Document émis attestant qu'une période d'échéance est intégralement réglée, figé comme instantané des informations à l'émission.
-_Avoid_: Reçu, facture
+_Avoid_: Reçu, facture, relevé (désigne seulement la mise en page)
+
+**Signature du bailleur** :
+Image PNG ou JPEG téléversée par le propriétaire, incluse dans la quittance et le reçu avec la mention « signé électroniquement » et l'identifiant du document.
+_Avoid_: Signature électronique qualifiée
 
 **Reçu de paiement partiel** :
 Document attestant un paiement incomplet ; il n'est jamais une quittance.
