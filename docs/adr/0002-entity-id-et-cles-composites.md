@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 ---
 
 # `entity_id` sur toutes les tables de gestion et clés étrangères composites

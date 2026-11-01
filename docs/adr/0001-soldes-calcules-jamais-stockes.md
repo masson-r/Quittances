@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 ---
 
 # Soldes et statuts calculés, jamais stockés

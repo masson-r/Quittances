@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 ---
 
 # Sauvegardes supplémentaires et test de restauration reportés

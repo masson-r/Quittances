@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 ---
 
 # PDF généré une seule fois à l'émission, avec empreinte SHA-256

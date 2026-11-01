@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 ---
 
 # Opérations financières multi-lignes en fonctions SQL
