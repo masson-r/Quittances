@@ -45,3 +45,5 @@ Décidé avec l'utilisateur, en grilling.
 - **Vue consolidée** : « toutes mes structures » additionne les indicateurs en euros ; le tableau de comparaison ajoute une colonne structure ; aucune règle de cumul de droits (la RLS filtre selon l'appartenance).
 
 **Conséquence pour la reprise d'historique** : les vues sur 5 ans exigent que l'historique repris couvre **au moins cinq ans de baux, de paiements et de dépenses**, et que ces lignes comptent normalement dans tous les indicateurs. Ceci est reporté dans le ticket sur la reprise de l'historique.
+
+Mise a jour issue du ticket clos sur lapurement des charges : lindicateur Remboursements de charges (net) est la somme signee des lignes de charge_settlements a leur date ; solde estime = encaisse - depenses - remboursements nets ; les complements recus ne comptent pas dans encaisse ; compteur Apurement final a saisir au tableau de bord ; colonne Remboursements dans la comparaison par bien.

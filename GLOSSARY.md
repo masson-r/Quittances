@@ -61,7 +61,7 @@ Charge supportée par une structure pour un bien, rangée dans une catégorie.
 _Avoid_: Frais, coût
 
 **Apurement des charges** :
-Remboursement manuel au locataire d'un trop-perçu de charges, en cours ou en fin de bail.
+Ligne manuelle, positive (remboursement au locataire) ou négative (complément reçu), qui règle un écart de charges en cours ou en fin de bail ; un apurement final, éventuellement nul, est obligatoire à la fin de chaque bail.
 _Avoid_: Régularisation des charges (désigne le calcul avancé, hors périmètre)
 
 ## Documents

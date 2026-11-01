@@ -70,3 +70,5 @@ Décidé avec l'utilisateur, en grilling. Les noms de tables ci-dessous sont les
 
 **Fin de vie d'un dossier (RGPD)**
 - Pas de purge automatique au MVP. Fonction `anonymize_tenant(dossier)` exécutée **manuellement** par l'administrateur, utilisable 3 ans après la fin du dernier bail : remplace nom, prénom, e-mail et coordonnées, supprime `tenant_private_details` et le rattachement, conserve lignes financières et quittances (dont l'instantané nomme encore la personne). La **durée de conservation comptable côté bailleur reste à confirmer avant l'utilisation réelle** (point ouvert de la recherche RGPD).
+
+Mise a jour issue du ticket clos sur lapurement des charges : table charge_settlements (montant signe, genres charges_adjustment et unallocated_refund, is_final avec unicite partielle par bail) ; documents sert aussi aux justificatifs dapurement ; anonymize_tenant refuse un dossier dont un bail termine na pas dapurement final ; audit_logs couvre charge_settlement.created, .modified et .cancelled.

@@ -21,3 +21,5 @@ Comment saisit-on, avant ou pendant la mise en service, l'historique de location
 Contexte donne par la cloture du ticket sur la strategie de test : echelle prevue de trois baux en parallele ; la reprise doit pouvoir sappuyer sur une saisie simple.
 
 Contrainte issue du ticket clos sur le tableau de bord : les vues sur 1, 2, 3 et 5 ans exigent que lhistorique repris couvre au moins cinq ans de baux, de paiements et de depenses, et que ces lignes comptent normalement dans tous les indicateurs.
+
+Contrainte issue du ticket clos sur lapurement des charges : les baux termines repris doivent aussi recevoir leur apurement final (eventuellement nul), sans quoi lalerte Apurement final a saisir sapplique et lanonymisation reste bloquee ; les lignes dapurement historiques sont des lignes de reprise comme les autres.
