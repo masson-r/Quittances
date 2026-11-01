@@ -19,3 +19,5 @@ Comment saisit-on, avant ou pendant la mise en service, l'historique de location
 - effet sur le tableau de bord, les avertissements (espèces) et les tests de volumétrie.
 
 Contexte donne par la cloture du ticket sur la strategie de test : echelle prevue de trois baux en parallele ; la reprise doit pouvoir sappuyer sur une saisie simple.
+
+Contrainte issue du ticket clos sur le tableau de bord : les vues sur 1, 2, 3 et 5 ans exigent que lhistorique repris couvre au moins cinq ans de baux, de paiements et de depenses, et que ces lignes comptent normalement dans tous les indicateurs.
