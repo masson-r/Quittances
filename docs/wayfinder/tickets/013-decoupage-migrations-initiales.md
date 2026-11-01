@@ -42,3 +42,5 @@ Décidé avec l'utilisateur, en grilling.
 | 5 | `expenses` | `expense_categories`, `expenses`, `documents` | identity, property_tenants |
 | 5 | `dashboard` | `dashboard_summary`, `dashboard_monthly`, `dashboard_by_property` | finance_core, expenses, charge_settlements |
 | Reprise | `history_import` | `cancel_import_batch`, fonctions d'import, `anonymize_tenant` | finance_functions, charge_settlements |
+
+Ajustement issu du ticket clos sur le backlog : la table invitations passe au Lot 1 (migration identity), car le premier administrateur et les membres sont invites des le Lot 1 ; tenant_account_links reste au Lot 4.
