@@ -38,12 +38,11 @@ La **proposition initiale validée** du README §17 : architecture technique, mo
 - [Stratégie de test et critères d'acceptation transverses](tickets/009-strategie-de-test.md) : unitaires, intégration sur Supabase local et six parcours Playwright ; RLS testée par matrice déclarative avec test de garde ; PDF vérifiés par extraction de texte et empreinte ; seuil de 100 % des branches sur les fonctions financières pures ; liste de critères d'acceptation et recette signée avant l'utilisation réelle ; échelle de trois baux en parallèle.
 - [Indicateurs et vues du tableau de bord](tickets/010-indicateurs-tableau-de-bord.md) : appelé par date d'échéance, encaissé par date de réception, solde de trésorerie estimé non fiscal, restant dû et impayés calculés à ce jour avec liens vers les baux ; périodes de 1, 2, 3 et 5 ans, par appartement ou pour l'ensemble ; trois fonctions SQL à la demande sans total stocké.
 - [Apurement des charges : saisie manuelle du remboursement](tickets/011-apurement-des-charges.md) : table `charge_settlements` à montant signé (remboursé ou complément reçu), un apurement final obligatoire par bail (éventuellement nul) avec alerte et blocage de l'anonymisation, aucun effet sur échéances, soldes et quittances, indicateur net distinct de l'encaissé.
+- [Reprise de l'historique de location déjà réalisé](tickets/012-reprise-historique-location.md) : script de l'opérateur avec modèles CSV, `--dry-run` et rapport de totaux, lot tout ou rien rejeté en entier au moindre échec, rejeu sans doublon par `external_ref`, cinq ans au moins en détail, quittances anciennes émises seulement à la demande, annulation d'un lot en bloc.
 
 ## Not yet specified
 
 - **Durée de conservation comptable côté bailleur** : à confirmer avant l'utilisation réelle (point ouvert de la recherche RGPD, textes L123-22 et L102 B non vérifiés) ; conditionne l'usage de la fonction d'anonymisation.
-- **Migrations initiales** : découpage en fichiers SQL et ordre, une fois le modèle relationnel arrêté.
-- **Registre des risques et backlog final** : tickets du backlog (Lots 0 à 6), dépendances et critères d'acceptation, à rédiger quand toutes les décisions sont prises ; le registre doit inclure le risque accepté sur les sauvegardes (Storage non sauvegardé, restauration jamais testée) et le jalon à revoir avant l'utilisation réelle.
 
 ## Out of scope
 

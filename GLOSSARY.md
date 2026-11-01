@@ -70,6 +70,14 @@ _Avoid_: Régularisation des charges (désigne le calcul avancé, hors périmèt
 Document émis attestant qu'une période d'échéance est intégralement réglée, figé comme instantané des informations à l'émission.
 _Avoid_: Reçu, facture, relevé (désigne seulement la mise en page)
 
+**Reprise d'historique** :
+Saisie, avant ou pendant la mise en service, de l'historique de location réalisé hors de l'application, par lots importés par l'opérateur.
+_Avoid_: Migration de données, import ponctuel
+
+**Lot de reprise** (`import_batches`) :
+Ensemble de fichiers importés en une transaction tout ou rien, rejeté en entier au moindre échec et annulable en bloc.
+_Avoid_: Import partiel
+
 **Signature du bailleur** :
 Image PNG ou JPEG téléversée par le propriétaire, incluse dans la quittance et le reçu avec la mention « signé électroniquement » et l'identifiant du document.
 _Avoid_: Signature électronique qualifiée
