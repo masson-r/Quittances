@@ -34,12 +34,11 @@ La **proposition initiale validée** du README §17 : architecture technique, mo
 - [Parcours d'inscription et de rattachement du locataire](tickets/005-parcours-rattachement-locataire.md) : lien privé à usage unique de 14 jours pour membres et locataires ; demande « en attente » validée par le propriétaire, jamais sur e-mail seul ; consentement horodaté à la remise dématérialisée ; un profil pour plusieurs dossiers, un dossier pour un profil actif ; pas de révocation automatique.
 - [Mise en page de la quittance et du reçu partiel en PDF](tickets/006-mise-en-page-quittance-pdf.md) : variante C (relevé compact avec frise et jauge) retenue ; image de signature téléversée par le propriétaire, mention « signé électroniquement » et identifiant du document.
 - [Architecture technique, environnements et déploiement](tickets/008-architecture-technique.md) : monolithe par domaine, opérations financières en fonctions SQL, échéances par `pg_cron`, PDF généré une fois avec empreinte, TOTP obligatoire pour les membres, trois environnements, déploiement de production après migration, CI bloquante ; sauvegardes supplémentaires reportées, risque accepté.
+- [Modèle relationnel et contraintes de la base](tickets/007-modele-relationnel.md) : `entity_id` et clés composites partout, montants en centimes, échéance stockant l'appelé et soldes et statuts calculés par vue, annulations par `cancelled_*` sans suppression, `receipts` unique avec instantané, signature facultative par structure, `audit_logs` en ajout seul sur 3 ans, anonymisation manuelle des dossiers.
 
 ## Not yet specified
 
-- **Indicateurs du tableau de bord** : définition précise de « loyers appelés », « encaissé », « solde estimé » et des comparaisons par bien, une fois les règles financières fixées.
-- **Dépenses et apurement des charges** : catégories, statuts, justificatifs, traitement comptable simple de l'apurement, et sort d'un montant non affecté à rembourser au locataire.
-- **Journal d'audit** : liste exacte des opérations journalisées et contenu des entrées.
+- **Durée de conservation comptable côté bailleur** : à confirmer avant l'utilisation réelle (point ouvert de la recherche RGPD, textes L123-22 et L102 B non vérifiés) ; conditionne l'usage de la fonction d'anonymisation.
 - **Migrations initiales** : découpage en fichiers SQL et ordre, une fois le modèle relationnel arrêté.
 - **Registre des risques et backlog final** : tickets du backlog (Lots 0 à 6), dépendances et critères d'acceptation, à rédiger quand toutes les décisions sont prises ; le registre doit inclure le risque accepté sur les sauvegardes (Storage non sauvegardé, restauration jamais testée) et le jalon à revoir avant l'utilisation réelle.
 
