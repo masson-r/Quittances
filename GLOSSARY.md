@@ -79,7 +79,7 @@ Ensemble de fichiers importés en une transaction tout ou rien, rejeté en entie
 _Avoid_: Import partiel
 
 **Signature du bailleur** :
-Image PNG ou JPEG téléversée par le propriétaire, incluse dans la quittance et le reçu avec la mention « signé électroniquement » et l'identifiant du document.
+Image PNG ou JPEG que chaque membre téléverse pour lui-même, seul à la voir et à la gérer ; celle de la personne qui émet le document est incluse dans la quittance et le reçu avec la mention « signé électroniquement » et l'identifiant du document.
 _Avoid_: Signature électronique qualifiée
 
 **Reçu de paiement partiel** :

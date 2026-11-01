@@ -38,7 +38,7 @@ Décidé avec l'utilisateur, en grilling.
 | 3 | `finance_cron` | `create_due_rent_charges`, expirations, planification `pg_cron` | finance_functions |
 | 3 | `charge_settlements` | `charge_settlements`, fonction de saisie, apurement final | finance_core |
 | 4 | `tenant_access` | `invitations`, `tenant_account_links`, consommation d'invitation | identity, leases |
-| 4 | `signatures_receipts` | `entity_signatures`, `receipts`, fonction d'émission, numérotation | finance_functions |
+| 4 | `signatures_receipts` | `member_signatures`, `receipts`, fonction d'émission, numérotation | finance_functions |
 | 5 | `expenses` | `expense_categories`, `expenses`, `documents` | identity, property_tenants |
 | 5 | `dashboard` | `dashboard_summary`, `dashboard_monthly`, `dashboard_by_property` | finance_core, expenses, charge_settlements |
 | Reprise | `history_import` | `cancel_import_batch`, fonctions d'import, `anonymize_tenant` | finance_functions, charge_settlements |

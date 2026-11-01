@@ -82,7 +82,7 @@ erDiagram
     OWNERSHIP_ENTITIES ||--o{ INVITATIONS : "emet"
     OWNERSHIP_ENTITIES ||--o{ PROPERTIES : "possede"
     OWNERSHIP_ENTITIES ||--o{ TENANTS : "gere"
-    OWNERSHIP_ENTITIES ||--o{ ENTITY_SIGNATURES : "signature"
+    ENTITY_MEMBERSHIPS ||--o{ MEMBER_SIGNATURES : "signature personnelle"
     OWNERSHIP_ENTITIES ||--o{ EXPENSE_CATEGORIES : "categories"
     OWNERSHIP_ENTITIES ||--o{ IMPORT_BATCHES : "reprises"
     PROPERTIES ||--o{ PROPERTY_MAINTENANCE_NOTES : "historique"
@@ -104,7 +104,7 @@ erDiagram
     EXPENSE_CATEGORIES ||--o{ EXPENSES : "classe"
     DOCUMENTS ||--o{ EXPENSES : "justificatif"
     DOCUMENTS ||--o{ CHARGE_SETTLEMENTS : "justificatif"
-    ENTITY_SIGNATURES ||--o{ RECEIPTS : "utilisee par"
+    MEMBER_SIGNATURES ||--o{ RECEIPTS : "utilisee par"
     PROFILES ||--o{ TENANT_ACCOUNT_LINKS : "rattache"
     TENANTS ||--o{ TENANT_ACCOUNT_LINKS : "rattache"
     IMPORT_BATCHES ||--o{ LEASES : "marque"
@@ -200,7 +200,7 @@ Les tables `AUDIT_LOGS` et `ROLE_PERMISSIONS` sont transversales (sans clé étr
 
 **Documents**
 - `receipts` : une table pour les deux genres (`quittance`, `partial_receipt`), avec instantané `jsonb`, empreinte et chaîne de versions.
-- `entity_signatures` : une signature active par structure, anciennes conservées.
+- `member_signatures` : signature personnelle d'un membre (une active par membre et structure), téléversée et gérée par lui seul, anciennes conservées.
 
 **Traçabilité**
 - `audit_logs` en ajout seul, écrit par les fonctions SQL et des triggers.
@@ -230,7 +230,7 @@ Règles : tables créées lot par lot ; un sujet par migration avec **la RLS dan
 | 3 | `finance_cron` | `create_due_rent_charges`, expirations, planification `pg_cron` | finance_functions |
 | 3 | `charge_settlements` | `charge_settlements`, fonction de saisie, apurement final | finance_core |
 | 4 | `tenant_access` | `tenant_account_links`, consommation d'invitation de locataire | identity, leases |
-| 4 | `signatures_receipts` | `entity_signatures`, `receipts`, fonction d'émission, numérotation | finance_functions |
+| 4 | `signatures_receipts` | `member_signatures`, `receipts`, fonction d'émission, numérotation | finance_functions |
 | 5 | `expenses` | `expense_categories`, `expenses`, `documents` | identity, property_tenants |
 | 5 | `dashboard` | `dashboard_summary`, `dashboard_monthly`, `dashboard_by_property` | finance_core, expenses, charge_settlements |
 | Reprise | `history_import` | `cancel_import_batch`, fonctions d'import, `anonymize_tenant` | finance_functions, charge_settlements |
@@ -253,7 +253,7 @@ L = lecture, E = écriture, A = annulation ou archivage.
 | Dépenses et catégories | L E A (catégories : administrateur seul) | L E A | L |
 | Apurements des charges | L E A | L E A | L |
 | Quittances et reçus (émission, annulation) | L E A | L E A | L |
-| Signature du bailleur (téléversement et remplacement) | L E A | – (lecture non précisée, à valider) | – (lecture non précisée, à valider) |
+| Sa propre signature (téléversement, remplacement, retrait) | L E A | L E A | – |
 | Journal d'audit | L | – | – |
 | Champs sensibles (codes d'accès, garant, aide au logement, naissance) | L E | L E | – |
 
@@ -310,7 +310,7 @@ L = lecture, E = écriture, A = annulation ou archivage.
 
 **Mise en page** : variante C « relevé compact », retenue sur le prototype (branche `prototype/quittance-pdf`) : bande verticale colorée (bleue pour la quittance, orange pour le reçu), puce de genre, période en grand, trois colonnes bailleur, locataires et logement, frise des règlements, jauge du montant reçu, tableau de décomposition loyer et charges, phrase de déclaration avec le montant en chiffres et en lettres, identifiant du document, mentions de conservation (3 ans) et de gratuité.
 
-**Signature** : image PNG ou JPEG (500 Ko et 1 200 × 600 pixels au maximum, EXIF supprimé) téléversée par l'administrateur, une active par structure, facultative. Le document porte « signé électroniquement » et l'identifiant du document. Cette mention indique une émission par le compte du bailleur ; elle n'a pas valeur de signature électronique qualifiée, et la recherche n'a trouvé aucune exigence légale de signature.
+**Signature** : image PNG ou JPEG (500 Ko et 1 200 × 600 pixels au maximum, EXIF supprimé) téléversée par le membre lui-même (administrateur ou gestionnaire), une active par membre et structure, facultative, visible et modifiable par son seul auteur. Le document émis porte la signature de la personne qui l'émet, figée dans l'instantané ; sans signature, il porte seulement « signé électroniquement » et l'identifiant du document. Cette mention indique une émission par le compte du bailleur ; elle n'a pas valeur de signature électronique qualifiée, et la recherche n'a trouvé aucune exigence légale de signature.
 
 **Consentement** : case obligatoire à la demande de rattachement (profil, date et heure, version du texte), retirable ; le retrait n'empêche pas le propriétaire d'émettre un PDF.
 
@@ -426,7 +426,7 @@ flowchart LR
 |---|---|---|---|
 | L4-01 | Rattachement : migration `tenant_access`, consommation d'invitation avec limitation de débit, validation, refus, révocation, retrait du consentement, expiration | L1-06, L2-03 | T : message unique pour tout lien invalide ; jamais de rattachement par e-mail seul |
 | L4-02 | Espace locataire : inscription, Mon espace, demandes, coordonnées, résumé des baux, mobile | L4-01 | E sur mobile ; le locataire ne voit ni échéances, ni paiements, ni soldes |
-| L4-03 | Signature du bailleur : migration, téléversement par l'administrateur, validation de l'image | L1-02 | PNG ou JPEG, 500 Ko, 1 200 × 600 pixels, EXIF supprimé |
+| L4-03 | Signature du bailleur : migration, téléversement par chaque membre de sa propre signature, validation de l'image | L1-02 | PNG ou JPEG, 500 Ko, 1 200 × 600 pixels, EXIF supprimé |
 | L4-04 | Quittances et reçus : migration `receipts`, émission, numérotation, PDF variante C, stockage privé, empreinte, annulation et remplacement | L3-03, L4-03, L0-04 | extraction de texte du PDF ; une quittance active par échéance ; PDF jamais régénéré |
 | L4-05 | Téléchargement sécurisé : route serveur, lien de 60 secondes, module `service_role` limité | L4-04, L4-01 | accès direct au bucket refusé ; lien expiré refusé |
 
@@ -506,6 +506,6 @@ Propriétaire par défaut : l'utilisateur (également opérateur).
 2. **Le backlog et le registre des risques**, qui n'ont pas été discutés point par point : vous aviez répondu d'avance « oui à tes recommandations » (ticket 014). Vérifiez surtout l'ordre des lots, la place de la reprise d'historique avant le Lot 6 et le découpage des tickets.
 3. Les cinq ADR, actuellement en statut `proposed`.
 4. Les écarts avec le README listés ci-dessus.
-5. **Un point que je n'ai pas tranché** : seul l'administrateur téléverse la signature, mais la décision n'indique pas si le gestionnaire et le lecteur peuvent la consulter. Je propose que tous les membres la voient, puisqu'elle figure sur les documents qu'ils émettent et consultent.
+5. **Signature personnelle (tranché)** : chaque membre téléverse sa propre signature, que lui seul voit et gère ; le document porte celle de la personne qui l'émet.
 
 Après votre validation, le travail suit le backlog, un ticket à la fois, test d'abord, en commençant par L0-01.

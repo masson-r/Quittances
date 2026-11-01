@@ -79,7 +79,7 @@ Decision issue du ticket clos sur les migrations : le tableau de decoupage (lot,
 |---|---|---|---|
 | L4-01 | Rattachement : migration `tenant_access`, consommation d'invitation avec limitation de débit, demande, validation, refus, révocation, retrait du consentement, expiration | L1-06, L2-03 | T : message unique pour tout lien invalide ; jamais de rattachement par e-mail seul |
 | L4-02 | Espace locataire : inscription, Mon espace, demandes, coordonnées, résumé des baux, mobile | L4-01 | E sur mobile ; le locataire ne voit ni échéances, ni paiements, ni soldes |
-| L4-03 | Signature du bailleur : migration `entity_signatures`, téléversement par l'administrateur, validation de l'image | L1-02 | PNG ou JPEG, 500 Ko, 1 200 × 600 pixels, EXIF supprimé |
+| L4-03 | Signature du bailleur : migration `member_signatures`, téléversement par chaque membre de sa propre signature, validation de l'image | L1-02 | PNG ou JPEG, 500 Ko, 1 200 × 600 pixels, EXIF supprimé |
 | L4-04 | Quittances et reçus : migration `receipts`, émission (dates modifiables), numérotation, PDF variante C côté serveur, stockage privé, empreinte SHA-256, annulation et remplacement | L3-03, L4-03, L0-04 | tests d'extraction de texte du PDF ; une quittance active par échéance ; PDF jamais régénéré |
 | L4-05 | Téléchargement sécurisé : route serveur, lien de 60 secondes, module `service_role` limité | L4-04, L4-01 | accès direct au bucket refusé ; lien expiré refusé |
 *Jalon L4 : chaque locataire accède exclusivement aux documents qui lui sont destinés.*
