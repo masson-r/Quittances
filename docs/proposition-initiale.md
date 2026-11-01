@@ -503,7 +503,7 @@ Propriétaire par défaut : l'utilisateur (également opérateur).
 
 ### Ce que je vous demande de valider
 1. Cette proposition dans son ensemble, avant toute écriture de code.
-2. **Le backlog et le registre des risques**, qui n'ont pas été discutés point par point : vous aviez répondu d'avance « oui à tes recommandations » (ticket 014). Vérifiez surtout l'ordre des lots, la place de la reprise d'historique avant le Lot 6 et le découpage des tickets.
+2. **Le backlog et le registre des risques** (registre des risques validé par l'utilisateur ; backlog encore à relire), qui n'ont pas été discutés point par point : vous aviez répondu d'avance « oui à tes recommandations » (ticket 014). Vérifiez surtout l'ordre des lots, la place de la reprise d'historique avant le Lot 6 et le découpage des tickets.
 3. Les cinq ADR, actuellement en statut `proposed`.
 4. Les écarts avec le README listés ci-dessus.
 5. **Signature personnelle (tranché)** : chaque membre téléverse sa propre signature, que lui seul voit et gère ; le document porte celle de la personne qui l'émet.
