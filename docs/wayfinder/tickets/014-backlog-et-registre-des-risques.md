@@ -15,3 +15,5 @@ Quel est le backlog final de réalisation et le registre des risques qui complè
 - jalons avant la première utilisation réelle : recette signée, sauvegardes (risque accepté), durée de conservation comptable côté bailleur à confirmer, et points à vérifier de la recherche juridique (texte de l'article 21, L. 112-6 et L. 112-7, article 8-1) ;
 - registre des risques techniques et métier : risque, probabilité, effet, mesure, propriétaire ;
 - forme finale de la proposition consolidée à valider.
+
+Decision issue du ticket clos sur les migrations : le tableau de decoupage (lot, migration, dependances) sert de base au decoupage du backlog ; le SQL est ecrit dans les tickets du backlog, test dabord ; le script seed:test et le jalon supabase db reset sont des taches du Lot 0.
