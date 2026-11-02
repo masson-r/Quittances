@@ -1,6 +1,6 @@
-# Proposition initiale — Application de gestion locative
+# Proposition initiale — Loyo-reg, application de gestion locative
 
-**Statut : proposition à valider. Aucun code applicatif n'a été écrit.** Ce document répond au livrable initial du README §17. Il est assemblé à partir des 14 tickets de la carte wayfinder ([docs/wayfinder/map.md](wayfinder/map.md)), qui gardent le détail de chaque décision et sa justification. En cas d'écart entre ce document et un ticket, le ticket fait foi ; signalez-le pour que ce document soit corrigé.
+**Statut : proposition validée ; le développement suit le backlog (L0-01 terminé).** Ce document répond au livrable initial du README §17. Il est assemblé à partir des 14 tickets de la carte wayfinder ([docs/wayfinder/map.md](wayfinder/map.md)), qui gardent le détail de chaque décision et sa justification. En cas d'écart entre ce document et un ticket, le ticket fait foi ; signalez-le pour que ce document soit corrigé.
 
 Vocabulaire : [GLOSSARY.md](../GLOSSARY.md). Décisions difficiles à renverser : [docs/adr](adr). Recherches sources : branches `research/cadre-legal-quittances` et `research/rgpd-et-hebergement` (jamais fusionnées).
 

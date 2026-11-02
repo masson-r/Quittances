@@ -1,4 +1,4 @@
-# Gestion locative
+# Loyo-reg — gestion locative
 
 Application web de gestion locative multi-propriétaires : patrimoine, baux, loyers, encaissements, dépenses et quittances. Les termes sont en français ; l'identifiant de table anglais correspondant est donné entre parenthèses.
 

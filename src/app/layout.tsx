@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Quittances",
+  title: "Loyo-reg",
   description: "Gestion locative et quittances",
 };
 
