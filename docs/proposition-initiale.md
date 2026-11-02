@@ -218,7 +218,7 @@ Règles : tables créées lot par lot ; un sujet par migration avec **la RLS dan
 
 | Lot | Migration | Contenu | Dépend de |
 |---|---|---|---|
-| 0/1 | `extensions_helpers` | extensions, schéma `app`, `app_today`, `set_updated_at`, écriture d'audit | — |
+| 0/1 | `extensions_helpers` | schéma `app`, `paris_date`, `app_today`, `set_updated_at` (aucune extension : `pg_cron` arrive avec `finance_cron` ; l'écriture d'audit arrive avec la migration `audit`, qui crée la table) | — |
 | 1 | `audit` | `audit_logs` en ajout seul, fonction de purge | helpers |
 | 1 | `identity` | `profiles`, `ownership_entities`, `entity_memberships`, `role_permissions` et ses données, `has_permission`, `invitations`, triggers du dernier administrateur et de la copie d'e-mail, RLS | audit |
 | 1 | `create_entity` | fonction de création de structure, catégories par défaut | identity |
