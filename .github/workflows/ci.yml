@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   app:
-    name: Application (types, lint, build, scripts)
+    name: Application (types, lint, build, tests unitaires)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,6 +27,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm test:scripts
+      - run: pnpm test
       - run: pnpm build
 
   migrations:
@@ -55,3 +56,9 @@ jobs:
           supabase start -x studio,imgproxy,edge-runtime,logflare,vector,mailpit
           supabase db reset
           supabase test db
+          pnpm seed:test
+      - run: pnpm test:integration
+      - name: Tests de bout en bout
+        run: |
+          pnpm exec playwright install --with-deps chromium
+          pnpm test:e2e
