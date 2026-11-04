@@ -22,3 +22,13 @@ Un ticket n'est terminé que si, en plus de ses critères propres :
 | Scripts | `pnpm test:scripts` | `scripts/*.test.mjs` |
 
 `pnpm seed:test` prépare la base locale (fixe `app.environment = 'test'`) et refuse tout hôte non local. Le jeu de données fictif s'y ajoutera avec les lots suivants. Les tests d'intégration lisent `DATABASE_URL` (défaut : base locale) et s'exécutent dans une transaction annulée.
+
+## Matrice RLS et test de garde
+
+`tests/integration/rls-matrix.ts` déclare, pour chaque table du schéma `public`, ce que chaque rôle (`anon`, `authenticated`, `service_role`) peut faire en lecture, insertion, modification et suppression. `rls.test.ts` génère un test par case. Le test de garde échoue si :
+
+- une table de `public` n'a pas la RLS activée ;
+- une table de `public` manque dans la matrice ;
+- une fonction `SECURITY DEFINER` est hors de la liste `ALLOWED_SECURITY_DEFINER`, hors du schéma `app`, ou sans `search_path` vide.
+
+Toute migration qui ajoute une table ou une fonction `SECURITY DEFINER` met à jour ce fichier dans la même modification.
