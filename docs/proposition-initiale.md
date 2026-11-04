@@ -235,7 +235,7 @@ Règles : tables créées lot par lot ; un sujet par migration avec **la RLS dan
 | 5 | `dashboard` | `dashboard_summary`, `dashboard_monthly`, `dashboard_by_property` | finance_core, expenses, charge_settlements |
 | Reprise | `history_import` | `cancel_import_batch`, fonctions d'import, `anonymize_tenant` | finance_functions, charge_settlements |
 
-**Schémas et privilèges** : fonctions applicatives en `SECURITY INVOKER` dans `public`, `REVOKE ALL FROM PUBLIC` puis `GRANT EXECUTE` à `authenticated`. Fonctions `SECURITY DEFINER` (consommation d'invitation, purge du journal, anonymisation, tâches `pg_cron`, écriture d'audit) dans `app`, avec `search_path` vide ; un test de garde échoue si l'une apparaît hors de la liste autorisée.
+**Schémas et privilèges** : fonctions applicatives en `SECURITY INVOKER` dans `public`, `REVOKE ALL FROM PUBLIC` puis `GRANT EXECUTE` à `authenticated`. Fonctions `SECURITY DEFINER` (`has_permission`, nécessaire pour que la RLS des membres ne s'appelle pas elle-même ; copie profil depuis l'authentification ; gardes du dernier administrateur ; consommation d'invitation, purge du journal, anonymisation, tâches `pg_cron`, écriture d'audit) dans `app`, avec `search_path` vide ; un test de garde échoue si l'une apparaît hors de la liste autorisée.
 
 ## 5. Matrice des autorisations
 
