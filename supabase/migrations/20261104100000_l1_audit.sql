@@ -46,6 +46,7 @@ create trigger audit_logs_no_update_delete
   before update or delete on public.audit_logs
   for each row execute function app.audit_logs_append_only();
 
+-- allow-destructive: ce trigger interdit TRUNCATE, il n'en exécute aucun
 create trigger audit_logs_no_truncate
   before truncate on public.audit_logs
   for each statement execute function app.audit_logs_append_only();
