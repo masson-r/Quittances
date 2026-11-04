@@ -113,4 +113,5 @@ export const ALLOWED_SECURITY_DEFINER = [
   'app.sync_profile_from_auth',
   'app.guard_last_admin',
   'app.guard_last_admin_profile',
+  'app.revoke_sessions_on_disable',
 ]
