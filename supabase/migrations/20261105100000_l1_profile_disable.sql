@@ -30,7 +30,8 @@ as $$
 begin
   if new.status = 'disabled' and old.status <> 'disabled' then
     delete from auth.sessions where user_id = new.id;
-    update auth.users set banned_until = 'infinity' where id = new.id;
+    -- Pas 'infinity' : le serveur d'authentification ne sait pas lire cette valeur.
+    update auth.users set banned_until = now() + interval '100 years' where id = new.id;
   elsif new.status = 'active' and old.status <> 'active' then
     update auth.users set banned_until = null where id = new.id;
   end if;

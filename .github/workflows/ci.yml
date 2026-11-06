@@ -53,11 +53,16 @@ jobs:
           version: 2.122.0
       - name: Base locale et tests
         run: |
-          supabase start -x studio,imgproxy,edge-runtime,logflare,vector,mailpit
+          supabase start -x studio,imgproxy,edge-runtime,logflare,vector
           supabase db reset
           supabase test db
           pnpm seed:test
       - run: pnpm test:integration
+      - name: Variables de l'application
+        run: |
+          eval "$(supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY)=')"
+          echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$PUBLISHABLE_KEY" >> "$GITHUB_ENV"
       - name: Tests de bout en bout
         run: |
           pnpm exec playwright install --with-deps chromium
