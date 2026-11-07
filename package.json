@@ -17,7 +17,8 @@
     "test": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
     "test:e2e": "playwright test",
-    "seed:test": "tsx scripts/seed-test.ts"
+    "seed:test": "tsx scripts/seed-test.ts",
+    "operator:create-structure": "tsx scripts/operator/create-structure.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
