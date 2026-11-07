@@ -50,7 +50,7 @@ Application web de gestion locative en français, multi-propriétaires, avec un 
 **Sécurité**
 - Droits relus en base à chaque requête, jamais portés par le jeton de session.
 - Double authentification TOTP obligatoire pour l'administrateur et le gestionnaire (codes de secours, réinitialisation par l'opérateur).
-- Clé `service_role` jamais exposée au navigateur, limitée à un module serveur isolé pour deux usages (consommation des invitations avec création des rattachements, liens de téléchargement temporaires) et au script de l'opérateur hors application.
+- Clé `service_role` jamais exposée au navigateur, hors de l'application : script de l'opérateur seulement, plus un module serveur isolé pour les liens de téléchargement temporaires (L4-05). La consommation des invitations n'en a pas besoin : c'est une fonction SQL `SECURITY DEFINER` appelée sous l'identité de l'utilisateur.
 - Journal d'audit en ajout seul, par identifiants, sans donnée personnelle recopiée.
 - Limitation de débit : 10 tentatives par heure par IP et par profil sur les liens d'invitation, message unique « Lien invalide ou expiré ».
 

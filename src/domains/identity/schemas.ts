@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { ROLES } from './roles'
 
 const email = z
   .string({ error: 'Saisissez votre adresse e-mail.' })
@@ -61,6 +62,10 @@ export const recoveryCodeSchema = z.object({
     .pipe(z.string().regex(/^[0-9a-f]{16}$/, 'Saisissez un code de secours valide (16 caractères).'))
     .transform((v) => `${v.slice(0, 4)}-${v.slice(4, 8)}-${v.slice(8, 12)}-${v.slice(12)}`),
 })
+
+export const memberRoleSchema = z.enum(ROLES, { error: 'Choisissez un rôle.' })
+
+export const inviteMemberSchema = z.object({ email, role: memberRoleSchema })
 
 export type FieldErrors = Record<string, string[] | undefined>
 

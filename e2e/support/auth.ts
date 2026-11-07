@@ -25,8 +25,7 @@ export async function signIn(page: Page, email: string, password = PASSWORD) {
 }
 
 /** Compte créé, confirmé et connecté (sans structure : aucun second facteur exigé). */
-export async function confirmedUser(page: Page) {
-  const email = unique()
+export async function confirmedUser(page: Page, email = unique()) {
   await signUp(page, email)
   await page.goto(await confirmationLink(email))
   await expect(page).toHaveURL(/\/espace$/)
@@ -34,12 +33,24 @@ export async function confirmedUser(page: Page) {
 }
 
 /** Donne un rôle de membre à un compte, dans une structure créée pour l'occasion (action de l'opérateur). */
-export async function makeMember(email: string, role: 'administrator' | 'manager' | 'reader') {
+export async function makeMember(email: string, role: 'administrator' | 'manager' | 'reader'): Promise<string> {
   const entity = await operatorQuery("insert into public.ownership_entities (name, kind) values ('Structure E2E', 'sci') returning id")
   await operatorQuery(
     'insert into public.entity_memberships (entity_id, profile_id, role) select $1, id, $2 from public.profiles where email = $3',
     [entity.rows[0].id, role, email],
   )
+  return entity.rows[0].id as string
+}
+
+/** Administrateur d'une nouvelle structure, second facteur activé, connecté (session aal2). */
+export async function adminWithStructure(page: Page) {
+  const email = await confirmedUser(page)
+  const entityId = await makeMember(email, 'administrator')
+  await page.goto('/espace')
+  const factor = await enrollSecondFactor(page)
+  await page.getByRole('link', { name: /continuer/ }).click()
+  await expect(page).toHaveURL(/\/espace$/)
+  return { email, entityId, ...factor }
 }
 
 const BASE32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'

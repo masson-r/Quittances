@@ -36,7 +36,7 @@ export async function proxy(request: NextRequest) {
     return redirect
   }
 
-  if (!user && (pathname.startsWith('/espace') || pathname.startsWith('/securite'))) {
+  if (!user && (pathname.startsWith('/espace') || pathname.startsWith('/securite') || pathname.startsWith('/invitation'))) {
     return redirectTo('/connexion', { next: pathname + search })
   }
   if (user && (pathname === '/connexion' || pathname === '/inscription')) {
@@ -46,5 +46,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/espace/:path*', '/securite/:path*', '/connexion', '/inscription'],
+  matcher: ['/espace/:path*', '/securite/:path*', '/invitation/:path*', '/connexion', '/inscription'],
 }
