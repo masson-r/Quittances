@@ -123,6 +123,16 @@ export const RLS_MATRIX: Record<string, TableSpec> = {
     },
     expected: { anon: nothing, authenticated: nothing, service_role: nothing },
   },
+  invitation_attempts: {
+    seed: IDENTITY_SEED + `insert into public.invitation_attempts (profile_id, client_key) values (${P1}, 'matrix-key');`,
+    statements: {
+      select: 'select * from public.invitation_attempts',
+      insert: `insert into public.invitation_attempts (profile_id, client_key) values (${P1}, 'matrix-key-2')`,
+      update: 'update public.invitation_attempts set attempted_at = now()',
+      delete: 'delete from public.invitation_attempts',
+    },
+    expected: { anon: nothing, authenticated: nothing, service_role: nothing },
+  },
 }
 
 /** Fonctions SECURITY DEFINER autorisées (schéma app uniquement), sous la forme app.nom. */
@@ -135,6 +145,7 @@ export const ALLOWED_SECURITY_DEFINER = [
   'app.guard_last_admin_profile',
   'app.revoke_sessions_on_disable',
   'app.audit_mfa',
+  'app.consume_invitation',
   'app.regenerate_recovery_codes',
   'app.use_recovery_code',
 ]
