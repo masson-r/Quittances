@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fieldErrors, forgotPasswordSchema, newPasswordSchema, signInSchema, signUpSchema } from './schemas'
+import { fieldErrors, forgotPasswordSchema, newPasswordSchema, recoveryCodeSchema, signInSchema, signUpSchema, totpCodeSchema } from './schemas'
 
 const valid = {
   firstName: 'Alice',
@@ -75,5 +75,37 @@ describe('newPasswordSchema', () => {
     expect(newPasswordSchema.safeParse({ password: 'MotDePasse2026!', confirmPassword: 'MotDePasse2026!' }).success).toBe(true)
     expect(newPasswordSchema.safeParse({ password: 'court', confirmPassword: 'court' }).success).toBe(false)
     expect(newPasswordSchema.safeParse({ password: 'MotDePasse2026!', confirmPassword: 'MotDePasse2027!' }).success).toBe(false)
+  })
+})
+
+describe('totpCodeSchema', () => {
+  it.each([['123456', '123456'], [' 123 456 ', '123456'], ['000000', '000000']])('accepte %j', (input, expected) => {
+    const r = totpCodeSchema.safeParse({ code: input })
+    expect(r.success).toBe(true)
+    if (r.success) expect(r.data.code).toBe(expected)
+  })
+
+  it.each(['12345', '1234567', 'abcdef', '12 34 5a', ''])('refuse %j', (input) => {
+    const r = totpCodeSchema.safeParse({ code: input })
+    expect(r.success).toBe(false)
+    if (!r.success) expect(fieldErrors(r.error).code?.[0]).toMatch(/6 chiffres/)
+  })
+})
+
+describe('recoveryCodeSchema', () => {
+  it.each([
+    ['a1b2-c3d4-e5f6-0789', 'a1b2-c3d4-e5f6-0789'],
+    [' A1B2 C3D4 E5F6 0789 ', 'a1b2-c3d4-e5f6-0789'],
+    ['a1b2c3d4e5f60789', 'a1b2-c3d4-e5f6-0789'],
+  ])('normalise %j', (input, expected) => {
+    const r = recoveryCodeSchema.safeParse({ code: input })
+    expect(r.success).toBe(true)
+    if (r.success) expect(r.data.code).toBe(expected)
+  })
+
+  it.each(['a1b2-c3d4-e5f6', 'g1b2-c3d4-e5f6-0789', 'a1b2-c3d4-e5f6-0789-aaaa', ''])('refuse %j', (input) => {
+    const r = recoveryCodeSchema.safeParse({ code: input })
+    expect(r.success).toBe(false)
+    if (!r.success) expect(fieldErrors(r.error).code?.[0]).toMatch(/code de secours/)
   })
 })

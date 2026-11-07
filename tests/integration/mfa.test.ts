@@ -22,7 +22,7 @@ const factorCount = async (c: pg.Client, user: string) =>
   Number((await c.query('select count(*) as n from auth.mfa_factors where user_id = $1', [user])).rows[0].n)
 
 const generate = async (c: pg.Client) => (await c.query('select public.regenerate_recovery_codes() as codes')).rows[0].codes as string[]
-const useCode = async (c: pg.Client, code: string) => (await c.query('select public.use_recovery_code($1) as r', [code])).rows[0].r as string
+const redeemCode = async (c: pg.Client, code: string) => (await c.query('select public.use_recovery_code($1) as r', [code])).rows[0].r as string
 
 const allowed = async (c: pg.Client, user: string, aal: 'aal1' | 'aal2', permission = 'structure:read') => {
   await asUser(c, user, aal)
@@ -94,7 +94,7 @@ describe('codes de secours : génération', () => {
       expect(Number((await c.query('select count(*) as n from public.mfa_recovery_codes where profile_id = $1', [U.adminA])).rows[0].n)).toBe(10)
       await addFactor(c, U.adminA)
       await asUser(c, U.adminA, 'aal1')
-      expect(await useCode(c, first[0])).toBe('invalid')
+      expect(await redeemCode(c, first[0])).toBe('invalid')
     })
   })
 })
@@ -107,13 +107,13 @@ describe('codes de secours : utilisation', () => {
       const [code, other] = await generate(c)
 
       await asUser(c, U.adminA, 'aal1')
-      expect(await useCode(c, code)).toBe('ok')
+      expect(await redeemCode(c, code)).toBe('ok')
       await asOwner(c)
       expect(await factorCount(c, U.adminA)).toBe(0)
 
       await asUser(c, U.adminA, 'aal1')
-      expect(await useCode(c, code)).toBe('invalid')
-      expect(await useCode(c, other)).toBe('ok')
+      expect(await redeemCode(c, code)).toBe('invalid')
+      expect(await redeemCode(c, other)).toBe('ok')
     })
   })
 
@@ -122,8 +122,8 @@ describe('codes de secours : utilisation', () => {
       await asUser(c, U.adminA)
       const [a, b] = await generate(c)
       await asUser(c, U.adminA, 'aal1')
-      expect(await useCode(c, ` ${a.toUpperCase()} `)).toBe('ok')
-      expect(await useCode(c, b.replaceAll('-', ''))).toBe('ok')
+      expect(await redeemCode(c, ` ${a.toUpperCase()} `)).toBe('ok')
+      expect(await redeemCode(c, b.replaceAll('-', ''))).toBe('ok')
     })
   })
 
@@ -132,7 +132,7 @@ describe('codes de secours : utilisation', () => {
       await asUser(c, U.managerA)
       const [managerCode] = await generate(c)
       await asUser(c, U.adminA, 'aal1')
-      expect(await useCode(c, managerCode)).toBe('invalid')
+      expect(await redeemCode(c, managerCode)).toBe('invalid')
     })
   })
 
@@ -141,20 +141,20 @@ describe('codes de secours : utilisation', () => {
       await asUser(c, U.adminA)
       const [code] = await generate(c)
       await asUser(c, U.adminA, 'aal1')
-      for (let i = 0; i < 5; i++) expect(await useCode(c, '0000-0000-0000-0000')).toBe('invalid')
-      expect(await useCode(c, code)).toBe('locked')
+      for (let i = 0; i < 5; i++) expect(await redeemCode(c, '0000-0000-0000-0000')).toBe('invalid')
+      expect(await redeemCode(c, code)).toBe('locked')
 
       await asOwner(c)
       await c.query("update public.mfa_recovery_attempts set attempted_at = now() - interval '61 minutes' where profile_id = $1", [U.adminA])
       await asUser(c, U.adminA, 'aal1')
-      expect(await useCode(c, code)).toBe('ok')
+      expect(await redeemCode(c, code)).toBe('ok')
     })
   })
 
   it('exige une session ouverte', async () => {
     await world(async (c) => {
       await asAnon(c)
-      await expect(useCode(c, '0000-0000-0000-0000')).rejects.toThrow(/permission denied/)
+      await expect(redeemCode(c, '0000-0000-0000-0000')).rejects.toThrow(/permission denied/)
     })
   })
 
@@ -163,7 +163,7 @@ describe('codes de secours : utilisation', () => {
       await asUser(c, U.adminA)
       const [code] = await generate(c)
       await asUser(c, U.adminA, 'aal1')
-      await useCode(c, code)
+      await redeemCode(c, code)
       await asOwner(c)
       const { rows } = await c.query(
         "select action, entity_id, actor_id, details from public.audit_logs where action like 'mfa.%' order by action",

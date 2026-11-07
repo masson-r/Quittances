@@ -1,37 +1,9 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { confirmationLink } from './support/mail'
 import { operatorQuery } from './support/db'
+import { PASSWORD, confirmedUser, signIn, signUp, unique } from './support/auth'
 
-const PASSWORD = 'MotDePasse2026!'
 const NEW_PASSWORD = 'NouveauMotDePasse2027!'
-
-const unique = () => `e2e-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.test`
-
-async function signUp(page: Page, email: string, password = PASSWORD) {
-  await page.goto('/inscription')
-  await page.getByLabel('Prénom').fill('Alice')
-  await page.getByLabel('Nom', { exact: true }).fill('Martin')
-  await page.getByLabel('Adresse e-mail').fill(email)
-  await page.getByLabel('Mot de passe', { exact: true }).fill(password)
-  await page.getByLabel('Confirmez le mot de passe').fill(password)
-  await page.getByRole('button', { name: 'Créer mon compte' }).click()
-  await expect(page.getByRole('status')).toContainText('message de confirmation')
-}
-
-async function signIn(page: Page, email: string, password = PASSWORD) {
-  await page.getByLabel('Adresse e-mail').fill(email)
-  await page.getByLabel('Mot de passe', { exact: true }).fill(password)
-  await page.getByRole('button', { name: 'Se connecter' }).click()
-}
-
-/** Compte créé, confirmé et connecté. */
-async function confirmedUser(page: Page) {
-  const email = unique()
-  await signUp(page, email)
-  await page.goto(await confirmationLink(email))
-  await expect(page).toHaveURL(/\/espace$/)
-  return email
-}
 
 test('inscription, confirmation par e-mail, déconnexion puis connexion', async ({ page }) => {
   const email = await confirmedUser(page)

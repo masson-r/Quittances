@@ -47,6 +47,21 @@ export const forgotPasswordSchema = z.object({ email })
 
 export const newPasswordSchema = z.object({ password, confirmPassword: z.string() }).superRefine(sameAsPassword)
 
+export const totpCodeSchema = z.object({
+  code: z
+    .string({ error: 'Saisissez le code à 6 chiffres.' })
+    .transform((v) => v.replace(/\s/g, ''))
+    .pipe(z.string().regex(/^\d{6}$/, 'Saisissez le code à 6 chiffres.')),
+})
+
+export const recoveryCodeSchema = z.object({
+  code: z
+    .string({ error: 'Saisissez un code de secours.' })
+    .transform((v) => v.replace(/[\s-]/g, '').toLowerCase())
+    .pipe(z.string().regex(/^[0-9a-f]{16}$/, 'Saisissez un code de secours valide (16 caractères).'))
+    .transform((v) => `${v.slice(0, 4)}-${v.slice(4, 8)}-${v.slice(8, 12)}-${v.slice(12)}`),
+})
+
 export type FieldErrors = Record<string, string[] | undefined>
 
 /** Erreurs de validation par champ, prêtes à afficher. */
