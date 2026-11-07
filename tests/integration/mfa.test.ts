@@ -166,11 +166,11 @@ describe('codes de secours : utilisation', () => {
       await redeemCode(c, code)
       await asOwner(c)
       const { rows } = await c.query(
-        "select action, entity_id, actor_id, details from public.audit_logs where action like 'mfa.%' order by action",
+        "select action, entity_id, actor_id, details from public.audit_logs where action like 'mfa.%' and entity_id = $1 order by action",
+        [E.A],
       )
-      expect(rows.map((r) => r.action)).toEqual(['mfa.recovery_code_used', 'mfa.recovery_codes_generated', 'mfa.recovery_codes_generated'].slice(0, rows.length))
+      expect(rows.map((r) => r.action)).toEqual(['mfa.recovery_code_used', 'mfa.recovery_codes_generated'])
       const used = rows.find((r) => r.action === 'mfa.recovery_code_used')
-      expect(used.entity_id).toBe(E.A)
       expect(used.actor_id).toBe(U.adminA)
       expect(JSON.stringify(rows)).not.toMatch(CODE_FORMAT)
     })
