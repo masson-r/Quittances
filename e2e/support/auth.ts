@@ -101,3 +101,8 @@ export async function enrollSecondFactor(page: Page) {
   const recoveryCodes = await page.getByTestId('recovery-codes').locator('li').allTextContents()
   return { secret, code, recoveryCodes }
 }
+
+/** Attend que tous les formulaires à action serveur de la page soient interactifs (hydratés). */
+export async function waitForForms(page: Page) {
+  await expect(page.locator('form[data-hydrated="false"]')).toHaveCount(0)
+}

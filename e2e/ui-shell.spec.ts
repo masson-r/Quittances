@@ -1,18 +1,10 @@
 import { test, expect, type Page } from '@playwright/test'
-import AxeBuilder from '@axe-core/playwright'
+import { blockingViolations } from './support/axe'
 import { adminWithStructure, confirmedUser, makeMember } from './support/auth'
 
 const DESKTOP = { width: 1280, height: 800 }
 const MOBILE = { width: 390, height: 844 }
 const MENU = 'Navigation principale'
-
-/** Violations d'accessibilité critiques ou sérieuses, lisibles dans le message d'échec. */
-async function blockingViolations(page: Page) {
-  const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
-  return violations
-    .filter((v) => v.impact === 'critical' || v.impact === 'serious')
-    .map((v) => `${v.impact} · ${v.id} · ${v.help} · ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`)
-}
 
 async function hasHorizontalScroll(page: Page) {
   return page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)
