@@ -45,6 +45,13 @@ const PROPERTY_SEED =
    insert into public.tenant_private_details (tenant_id, entity_id) values (${TENANT}, ${E_ID});
    insert into public.property_access_codes (entity_id, property_id, label, code) values (${E_ID}, ${PROP}, 'Portail', '0000');
    insert into public.property_maintenance_notes (entity_id, property_id, body) values (${E_ID}, ${PROP}, 'Note matrice');`
+
+const LEASE = "'00000000-0000-4000-8000-0000000000d4'"
+const LEASE_SEED =
+  PROPERTY_SEED +
+  `insert into public.leases (id, entity_id, property_id, start_date, due_day) values (${LEASE}, ${E_ID}, ${PROP}, '2026-01-01', 5);
+   insert into public.lease_tenants (entity_id, lease_id, tenant_id, start_date) values (${E_ID}, ${LEASE}, ${TENANT}, '2026-01-01');
+   insert into public.rental_terms (entity_id, lease_id, effective_from, rent_cents, charges_cents) values (${E_ID}, ${LEASE}, '2026-01-01', 80000, 5000);`
 const serviceCrud = { ...nothing, select: 'allowed', insert: 'allowed', update: 'allowed' } as Record<Action, Outcome>
 
 export const RLS_MATRIX: Record<string, TableSpec> = {
@@ -205,6 +212,38 @@ export const RLS_MATRIX: Record<string, TableSpec> = {
       delete: 'delete from public.tenant_private_details',
     },
     expected: { ...serviceRoleOnly, service_role: { ...serviceCrud, insert: 'denied' } },
+  },
+  leases: {
+    seed: LEASE_SEED,
+    statements: {
+      select: 'select * from public.leases',
+      insert: `with p as (insert into public.properties (entity_id, label) values (${E_ID}, 'Autre bien') returning id)
+               insert into public.leases (entity_id, property_id, start_date, due_day) select ${E_ID}, id, '2030-01-01', 5 from p`,
+      update: "update public.leases set deposit_cents = 100",
+      delete: 'delete from public.leases',
+    },
+    expected: { ...serviceRoleOnly, service_role: serviceCrud },
+  },
+  lease_tenants: {
+    seed: LEASE_SEED,
+    statements: {
+      select: 'select * from public.lease_tenants',
+      insert: `with t as (insert into public.tenants (entity_id, last_name) values (${E_ID}, 'Colocataire') returning id)
+               insert into public.lease_tenants (entity_id, lease_id, tenant_id, start_date) select ${E_ID}, ${LEASE}, id, '2026-02-01' from t`,
+      update: "update public.lease_tenants set end_date = '2026-12-31'",
+      delete: 'delete from public.lease_tenants',
+    },
+    expected: { ...serviceRoleOnly, service_role: serviceCrud },
+  },
+  rental_terms: {
+    seed: LEASE_SEED,
+    statements: {
+      select: 'select * from public.rental_terms',
+      insert: `insert into public.rental_terms (entity_id, lease_id, effective_from, rent_cents, charges_cents) values (${E_ID}, ${LEASE}, '2026-06-01', 82000, 5000)`,
+      update: "update public.rental_terms set reason = 'matrice'",
+      delete: 'delete from public.rental_terms',
+    },
+    expected: { ...serviceRoleOnly, service_role: serviceCrud },
   },
 }
 
