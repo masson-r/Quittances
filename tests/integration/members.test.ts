@@ -193,9 +193,10 @@ describe('consume_invitation', () => {
       const expired = await invite(c, INVITEE_EMAIL)
       await asOwner(c)
       await c.query("update public.invitations set expires_at = now() - interval '1 second' where id = $1", [expired.invitation_id])
+      const tenant = await c.query("insert into public.tenants (entity_id, last_name) values ($1, 'Locataire') returning id", [E.A])
       await c.query(
-        "insert into public.invitations (entity_id, kind, tenant_id, token_hash, created_by) values ($1, 'tenant', gen_random_uuid(), encode(sha256(convert_to('jeton-locataire', 'UTF8')), 'hex'), $2)",
-        [E.A, U.adminA],
+        "insert into public.invitations (entity_id, kind, tenant_id, token_hash, created_by) values ($1, 'tenant', $3, encode(sha256(convert_to('jeton-locataire', 'UTF8')), 'hex'), $2)",
+        [E.A, U.adminA, tenant.rows[0].id],
       )
       await createInvitee(c)
       await asUser(c, INVITEE, 'aal1')

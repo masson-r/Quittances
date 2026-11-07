@@ -247,8 +247,9 @@ describe('copie de l\'e-mail et du nom depuis l\'authentification', () => {
 describe('invitations', () => {
   const memberInvite = `insert into public.invitations (entity_id, kind, email, role, token_hash, created_by)
                         values ($1, 'member', 'nouveau@example.test', 'reader', $2, $3)`
+  const TENANT = '00000000-0000-4000-8000-0000000000f9'
   const tenantInvite = `insert into public.invitations (entity_id, kind, tenant_id, token_hash, created_by)
-                        values ($1, 'tenant', gen_random_uuid(), $2, $3)`
+                        values ($1, 'tenant', '${TENANT}', $2, $3)`
 
   it('l\'administrateur invite un membre ; le gestionnaire et le lecteur non', async () => {
     await world(async (c) => {
@@ -263,6 +264,7 @@ describe('invitations', () => {
 
   it('le gestionnaire invite un locataire ; le lecteur non', async () => {
     await world(async (c) => {
+      await c.query("insert into public.tenants (id, entity_id, last_name) values ($1, $2, 'Locataire')", [TENANT, E.A])
       await asUser(c, U.managerA)
       expect((await c.query(tenantInvite, [E.A, 'h-t1', U.managerA])).rowCount).toBe(1)
       await asUser(c, U.readerA)

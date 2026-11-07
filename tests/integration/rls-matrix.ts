@@ -34,6 +34,19 @@ const P1 = "'00000000-0000-4000-8000-00000000f001'"
 const P3 = "'00000000-0000-4000-8000-00000000f003'"
 const serviceRoleOnly = { anon: nothing, authenticated: nothing }
 
+const PROP = "'00000000-0000-4000-8000-0000000000d1'"
+const TENANT = "'00000000-0000-4000-8000-0000000000d2'"
+const BATCH = "'00000000-0000-4000-8000-0000000000d3'"
+const PROPERTY_SEED =
+  IDENTITY_SEED +
+  `insert into public.import_batches (id, entity_id) values (${BATCH}, ${E_ID});
+   insert into public.properties (id, entity_id, label) values (${PROP}, ${E_ID}, 'Bien matrice');
+   insert into public.tenants (id, entity_id, last_name) values (${TENANT}, ${E_ID}, 'Locataire matrice');
+   insert into public.tenant_private_details (tenant_id, entity_id) values (${TENANT}, ${E_ID});
+   insert into public.property_access_codes (entity_id, property_id, label, code) values (${E_ID}, ${PROP}, 'Portail', '0000');
+   insert into public.property_maintenance_notes (entity_id, property_id, body) values (${E_ID}, ${PROP}, 'Note matrice');`
+const serviceCrud = { ...nothing, select: 'allowed', insert: 'allowed', update: 'allowed' } as Record<Action, Outcome>
+
 export const RLS_MATRIX: Record<string, TableSpec> = {
   audit_logs: {
     seed: "select app.write_audit(null, 'matrix.seed', 'audit_logs', null, '{}'::jsonb)",
@@ -132,6 +145,66 @@ export const RLS_MATRIX: Record<string, TableSpec> = {
       delete: 'delete from public.invitation_attempts',
     },
     expected: { anon: nothing, authenticated: nothing, service_role: nothing },
+  },
+  import_batches: {
+    seed: PROPERTY_SEED,
+    statements: {
+      select: 'select * from public.import_batches',
+      insert: `insert into public.import_batches (entity_id) values (${E_ID})`,
+      update: "update public.import_batches set status = 'cancelled'",
+      delete: 'delete from public.import_batches',
+    },
+    expected: { ...serviceRoleOnly, service_role: serviceCrud },
+  },
+  properties: {
+    seed: PROPERTY_SEED,
+    statements: {
+      select: 'select * from public.properties',
+      insert: `insert into public.properties (entity_id, label) values (${E_ID}, 'Autre bien')`,
+      update: "update public.properties set description = 'matrice'",
+      delete: 'delete from public.properties',
+    },
+    expected: { ...serviceRoleOnly, service_role: serviceCrud },
+  },
+  property_maintenance_notes: {
+    seed: PROPERTY_SEED,
+    statements: {
+      select: 'select * from public.property_maintenance_notes',
+      insert: `insert into public.property_maintenance_notes (entity_id, property_id, body) values (${E_ID}, ${PROP}, 'Autre note')`,
+      update: "update public.property_maintenance_notes set body = 'matrice'",
+      delete: 'delete from public.property_maintenance_notes',
+    },
+    expected: { ...serviceRoleOnly, service_role: { ...nothing, select: 'allowed', insert: 'allowed' } },
+  },
+  property_access_codes: {
+    seed: PROPERTY_SEED,
+    statements: {
+      select: 'select * from public.property_access_codes',
+      insert: `insert into public.property_access_codes (entity_id, property_id, label, code) values (${E_ID}, ${PROP}, 'Autre', '1')`,
+      update: "update public.property_access_codes set code = '9'",
+      delete: 'delete from public.property_access_codes',
+    },
+    expected: { ...serviceRoleOnly, service_role: serviceCrud },
+  },
+  tenants: {
+    seed: PROPERTY_SEED,
+    statements: {
+      select: 'select * from public.tenants',
+      insert: `insert into public.tenants (entity_id, last_name) values (${E_ID}, 'Autre')`,
+      update: "update public.tenants set phone = '0'",
+      delete: 'delete from public.tenants',
+    },
+    expected: { ...serviceRoleOnly, service_role: serviceCrud },
+  },
+  tenant_private_details: {
+    seed: PROPERTY_SEED,
+    statements: {
+      select: 'select * from public.tenant_private_details',
+      insert: `insert into public.tenant_private_details (tenant_id, entity_id) values (${TENANT}, ${E_ID})`,
+      update: "update public.tenant_private_details set note = 'matrice'",
+      delete: 'delete from public.tenant_private_details',
+    },
+    expected: { ...serviceRoleOnly, service_role: { ...serviceCrud, insert: 'denied' } },
   },
 }
 
