@@ -103,6 +103,26 @@ export const RLS_MATRIX: Record<string, TableSpec> = {
     },
     expected: { ...serviceRoleOnly, service_role: { ...nothing, select: 'allowed', insert: 'allowed', update: 'allowed' } },
   },
+  mfa_recovery_codes: {
+    seed: IDENTITY_SEED + `insert into public.mfa_recovery_codes (profile_id, code_hash) values (${P1}, 'matrix-code-hash');`,
+    statements: {
+      select: 'select * from public.mfa_recovery_codes',
+      insert: `insert into public.mfa_recovery_codes (profile_id, code_hash) values (${P1}, 'matrix-code-hash-2')`,
+      update: 'update public.mfa_recovery_codes set used_at = now()',
+      delete: 'delete from public.mfa_recovery_codes',
+    },
+    expected: { anon: nothing, authenticated: nothing, service_role: nothing },
+  },
+  mfa_recovery_attempts: {
+    seed: IDENTITY_SEED + `insert into public.mfa_recovery_attempts (profile_id) values (${P1});`,
+    statements: {
+      select: 'select * from public.mfa_recovery_attempts',
+      insert: `insert into public.mfa_recovery_attempts (profile_id) values (${P1})`,
+      update: 'update public.mfa_recovery_attempts set attempted_at = now()',
+      delete: 'delete from public.mfa_recovery_attempts',
+    },
+    expected: { anon: nothing, authenticated: nothing, service_role: nothing },
+  },
 }
 
 /** Fonctions SECURITY DEFINER autorisées (schéma app uniquement), sous la forme app.nom. */
@@ -114,4 +134,7 @@ export const ALLOWED_SECURITY_DEFINER = [
   'app.guard_last_admin',
   'app.guard_last_admin_profile',
   'app.revoke_sessions_on_disable',
+  'app.audit_mfa',
+  'app.regenerate_recovery_codes',
+  'app.use_recovery_code',
 ]

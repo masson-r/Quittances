@@ -49,10 +49,13 @@ export async function buildWorld(c: pg.Client) {
   await c.query("update public.profiles set status = 'disabled' where id = $1", [U.disabled])
 }
 
-/** Se place dans la peau d'un utilisateur connecté (rôle authenticated, session JWT). */
-export async function asUser(c: pg.Client, userId: string) {
+/**
+ * Se place dans la peau d'un utilisateur connecté (rôle authenticated, session JWT).
+ * `aal` : niveau d'assurance de la session ; aal2 = second facteur validé (par défaut).
+ */
+export async function asUser(c: pg.Client, userId: string, aal: 'aal1' | 'aal2' = 'aal2') {
   await c.query('reset role')
-  await c.query("select set_config('request.jwt.claims', $1, true)", [JSON.stringify({ sub: userId, role: 'authenticated' })])
+  await c.query("select set_config('request.jwt.claims', $1, true)", [JSON.stringify({ sub: userId, role: 'authenticated', aal })])
   await c.query('set local role authenticated')
 }
 
