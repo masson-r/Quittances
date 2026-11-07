@@ -92,3 +92,10 @@ export async function listMyMemberships(userId: string): Promise<MyMembership[]>
     return entity ? [{ role: m.role as Role, entityId: entity.id, entityName: entity.name }] : []
   })
 }
+
+/** Permissions de l'utilisateur connecté dans une structure (vide s'il n'en est pas membre actif ou sans second facteur). */
+export async function myPermissions(entityId: string): Promise<string[]> {
+  const supabase = await createClient()
+  const { data } = await supabase.rpc('my_permissions', { p_entity_id: entityId })
+  return Array.isArray(data) ? (data as string[]) : []
+}

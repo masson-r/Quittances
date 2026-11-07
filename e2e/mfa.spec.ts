@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { confirmedUser, enrollSecondFactor, freshTotp, makeMember, signIn } from './support/auth'
+import { confirmedUser, enrollSecondFactor, freshTotp, makeMember, signIn, signOut } from './support/auth'
 
 test('administrateur : activation du second facteur, codes de secours, puis vérification à chaque connexion', async ({ page }) => {
   const email = await confirmedUser(page)
@@ -16,7 +16,7 @@ test('administrateur : activation du second facteur, codes de secours, puis vér
   await expect(page.getByRole('heading', { name: 'Bonjour Alice' })).toBeVisible()
 
   // Nouvelle connexion : le second facteur est redemandé.
-  await page.getByRole('button', { name: 'Se déconnecter' }).click()
+  await signOut(page)
   await signIn(page, email)
   await expect(page).toHaveURL(/\/securite\/verification/)
 
@@ -53,7 +53,7 @@ test('code de secours : il remplace le facteur perdu et ne sert qu\'une fois', a
   await page.goto('/espace')
   const first = await enrollSecondFactor(page)
   await page.getByRole('link', { name: /continuer/ }).click()
-  await page.getByRole('button', { name: 'Se déconnecter' }).click()
+  await signOut(page)
 
   await signIn(page, email)
   await expect(page).toHaveURL(/\/securite\/verification/)
@@ -79,7 +79,7 @@ test('code de secours : il remplace le facteur perdu et ne sert qu\'une fois', a
   await expect(page).toHaveURL(/\/espace$/)
 
   // L'ancien code de secours, déjà consommé puis remplacé, ne marche plus.
-  await page.getByRole('button', { name: 'Se déconnecter' }).click()
+  await signOut(page)
   await signIn(page, email)
   await expect(page).toHaveURL(/\/securite\/verification/)
   await page.goto('/securite/secours')

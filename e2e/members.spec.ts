@@ -1,7 +1,13 @@
 import { test, expect, type Browser, type Page } from '@playwright/test'
 import { adminWithStructure, confirmedUser, unique } from './support/auth'
+import { operatorQuery } from './support/db'
 
 const BASE_URL = 'http://127.0.0.1:3000'
+
+// Les essais ratés comptent par adresse réseau (ici toujours la même) : on repart de zéro à chaque test.
+test.beforeEach(async () => {
+  await operatorQuery('delete from public.invitation_attempts')
+})
 
 async function newVisitor(browser: Browser): Promise<Page> {
   const context = await browser.newContext({ baseURL: BASE_URL })
@@ -19,12 +25,14 @@ async function inviteFromPage(page: Page, email: string, roleLabel: string) {
 }
 
 async function openMembers(page: Page) {
-  await page.getByRole('link', { name: 'Gérer les membres' }).click()
-  await expect(page.getByRole('heading', { name: /Membres de/ })).toBeVisible()
+  await page.getByTestId('my-structure').getByRole('link').click()
+  await page.getByRole('navigation', { name: 'Navigation principale' }).getByRole('link', { name: 'Membres' }).click()
+  await expect(page.getByRole('heading', { name: 'Membres', level: 1 })).toBeVisible()
 }
 
 async function acceptInvitation(page: Page, link: string) {
   await page.goto(link)
+  await expect(page.locator('form[data-hydrated="true"]')).toBeVisible()
   await page.getByRole('button', { name: "Accepter l'invitation" }).click()
 }
 
@@ -45,7 +53,10 @@ test('invitation d\'un membre : lien privé, adresse vérifiée, rôle appliqué
   await expect(invitee.getByTestId('my-structure')).toContainText('Structure E2E')
   await expect(invitee.getByTestId('my-structure')).toContainText('Lecteur')
   // Le lecteur n'a pas accès à la gestion des membres.
-  await expect(invitee.getByRole('link', { name: 'Gérer les membres' })).toHaveCount(0)
+  await invitee.getByTestId('my-structure').getByRole('link').click()
+  const menu = invitee.getByRole('navigation', { name: 'Navigation principale' })
+  await expect(menu.getByRole('link', { name: 'Tableau de bord' })).toBeVisible()
+  await expect(menu.getByRole('link', { name: 'Membres' })).toHaveCount(0)
   await invitee.goto(`/espace/${admin.entityId}/membres`)
   await expect(invitee.getByRole('heading', { name: '404' })).toBeVisible()
 

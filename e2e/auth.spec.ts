@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { confirmationLink } from './support/mail'
 import { operatorQuery } from './support/db'
-import { PASSWORD, confirmedUser, signIn, signUp, unique } from './support/auth'
+import { PASSWORD, confirmedUser, signIn, signOut, signUp, unique } from './support/auth'
 
 const NEW_PASSWORD = 'NouveauMotDePasse2027!'
 
@@ -10,8 +10,7 @@ test('inscription, confirmation par e-mail, déconnexion puis connexion', async 
   await expect(page.getByRole('heading', { name: 'Bonjour Alice' })).toBeVisible()
   await expect(page.getByTestId('current-user')).toHaveText('Alice Martin')
 
-  await page.getByRole('button', { name: 'Se déconnecter' }).click()
-  await expect(page).toHaveURL(/\/connexion$/)
+  await signOut(page)
 
   await signIn(page, email)
   await expect(page).toHaveURL(/\/espace$/)
@@ -39,7 +38,7 @@ test('l\'espace propriétaire exige une connexion, puis ramène à la page deman
   const email = unique()
   await signUp(page, email)
   await page.goto(await confirmationLink(email))
-  await page.getByRole('button', { name: 'Se déconnecter' }).click()
+  await signOut(page)
 
   await page.goto('/espace')
   await expect(page).toHaveURL(/\/connexion/)
@@ -49,7 +48,7 @@ test('l\'espace propriétaire exige une connexion, puis ramène à la page deman
 
 test('le paramètre next ne permet pas de quitter le site', async ({ page }) => {
   const email = await confirmedUser(page)
-  await page.getByRole('button', { name: 'Se déconnecter' }).click()
+  await signOut(page)
   await page.goto('/connexion?next=//pirate.example')
   await signIn(page, email)
   await expect(page).toHaveURL(/127\.0\.0\.1:3000\/espace$/)
@@ -57,7 +56,7 @@ test('le paramètre next ne permet pas de quitter le site', async ({ page }) => 
 
 test('réinitialisation du mot de passe', async ({ page }) => {
   const email = await confirmedUser(page)
-  await page.getByRole('button', { name: 'Se déconnecter' }).click()
+  await signOut(page)
 
   await page.goto('/mot-de-passe-oublie')
   await page.getByLabel('Adresse e-mail').fill(email)
@@ -72,7 +71,7 @@ test('réinitialisation du mot de passe', async ({ page }) => {
   await page.getByRole('button', { name: 'Enregistrer' }).click()
   await expect(page).toHaveURL(/\/espace$/)
 
-  await page.getByRole('button', { name: 'Se déconnecter' }).click()
+  await signOut(page)
   await signIn(page, email, PASSWORD)
   await expect(page.locator('main [role="alert"]')).toContainText('incorrect')
   await signIn(page, email, NEW_PASSWORD)

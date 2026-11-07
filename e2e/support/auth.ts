@@ -24,6 +24,12 @@ export async function signIn(page: Page, email: string, password = PASSWORD) {
   await page.getByRole('button', { name: 'Se connecter' }).click()
 }
 
+/** Déconnexion, puis attente de la page de connexion (sinon une navigation suivante interrompt l'action). */
+export async function signOut(page: Page) {
+  await page.getByRole('button', { name: 'Se déconnecter' }).click()
+  await expect(page).toHaveURL(/\/connexion$/)
+}
+
 /** Compte créé, confirmé et connecté (sans structure : aucun second facteur exigé). */
 export async function confirmedUser(page: Page, email = unique()) {
   await signUp(page, email)

@@ -23,14 +23,10 @@ async function Welcome() {
           <ul className="grid gap-2">
             {memberships.map((m) => (
               <li key={m.entityId} className="flex flex-wrap items-baseline justify-between gap-2 rounded-lg border p-3" data-testid="my-structure">
-                <span className="font-medium">
-                  {m.entityName} <span className="text-muted-foreground text-sm">({roleLabel(m.role)})</span>
-                </span>
-                {m.role === 'administrator' && (
-                  <Link href={`/espace/${m.entityId}/membres`} className="text-sm underline">
-                    Gérer les membres
-                  </Link>
-                )}
+                <Link href={`/espace/${m.entityId}/tableau-de-bord`} className="font-medium underline">
+                  {m.entityName}
+                </Link>
+                <span className="text-muted-foreground text-sm">{roleLabel(m.role)}</span>
               </li>
             ))}
           </ul>
@@ -42,7 +38,7 @@ async function Welcome() {
 
 export default function EspacePage() {
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-8">
+    <main id="contenu" className="mx-auto w-full max-w-3xl px-4 py-8">
       <Suspense fallback={<p>Chargement…</p>}>
         <Welcome />
       </Suspense>

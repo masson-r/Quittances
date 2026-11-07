@@ -1,11 +1,8 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { z } from 'zod'
-import { getEntityName, hasPermission, listMembers, listPendingInvitations } from '@/domains/identity/members-service'
+import { requireSection } from '@/domains/identity/entity-access'
+import { listMembers, listPendingInvitations } from '@/domains/identity/members-service'
 import { roleLabel, statusLabel } from '@/domains/identity/roles'
-import { requireUser } from '@/domains/identity/session'
 import { InviteForm, MemberActions, PendingInvitationActions } from './forms'
 
 export const metadata: Metadata = { title: 'Membres — Loyo-reg' }
@@ -14,20 +11,15 @@ const dateFormat = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long', timeZon
 
 async function Members({ params }: { params: Promise<{ entityId: string }> }) {
   const { entityId } = await params
-  if (!z.uuid().safeParse(entityId).success) notFound()
-  const user = await requireUser()
-  if (!(await hasPermission(entityId, 'member:read'))) notFound()
-
-  const canWrite = await hasPermission(entityId, 'member:write')
-  const [name, members, invitations] = await Promise.all([getEntityName(entityId), listMembers(entityId), listPendingInvitations(entityId)])
+  const { user, entityName, permissions } = await requireSection(entityId, 'membres')
+  const canWrite = permissions.includes('member:write')
+  const [members, invitations] = await Promise.all([listMembers(entityId), listPendingInvitations(entityId)])
 
   return (
     <div className="grid gap-8">
       <header className="grid gap-1">
-        <h1 className="text-2xl font-semibold">Membres de {name}</h1>
-        <Link href="/espace" className="text-sm underline">
-          Retour à mon espace
-        </Link>
+        <h1 className="text-2xl font-semibold">Membres</h1>
+        <p className="text-muted-foreground">{entityName}</p>
       </header>
 
       <section aria-labelledby="membres-titre" className="grid gap-3">
@@ -95,10 +87,8 @@ async function Members({ params }: { params: Promise<{ entityId: string }> }) {
 
 export default function MembresPage({ params }: PageProps<'/espace/[entityId]/membres'>) {
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-8">
-      <Suspense fallback={<p>Chargement…</p>}>
-        <Members params={params} />
-      </Suspense>
-    </main>
+    <Suspense fallback={<p>Chargement…</p>}>
+      <Members params={params} />
+    </Suspense>
   )
 }
