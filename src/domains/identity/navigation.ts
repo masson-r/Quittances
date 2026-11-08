@@ -12,6 +12,7 @@ export const NAV_ITEMS: NavItem[] = [
   { slug: 'locataires', label: 'Locataires', permission: 'tenant:read' },
   { slug: 'baux', label: 'Baux', permission: 'lease:read' },
   { slug: 'paiements', label: 'Échéances et paiements', permission: 'payment:read' },
+  { slug: 'impayes', label: 'Impayés', permission: 'rent_charge:read' },
   { slug: 'quittances', label: 'Quittances', permission: 'receipt:read' },
   { slug: 'depenses', label: 'Dépenses', permission: 'expense:read' },
   { slug: 'membres', label: 'Membres', permission: 'member:read' },

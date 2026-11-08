@@ -125,7 +125,9 @@ test('déplacer une affectation et annuler une échéance sans paiement', async 
   await expect(main.getByTestId('allocation')).toHaveCount(1)
 
   await main.getByText('Corriger cette affectation').click()
-  await visible(main.getByLabel(/Déplacer \(.+\) vers/)).selectOption({ index: 1 })
+  const target = visible(main.getByLabel(/Déplacer \(.+\) vers/))
+  // La destination est l'échéance ouverte la plus ancienne (dernière de la liste) : la plus récente reste sans paiement.
+  await target.selectOption({ index: (await target.locator('option').count()) - 1 })
   await visible(main.getByLabel('Motif du déplacement')).fill('Mauvaise échéance')
   await main.getByRole('button', { name: /Déplacer l'affectation/ }).click()
   await expect(main.getByTestId('allocation')).toHaveCount(2)
