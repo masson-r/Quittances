@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import fc from 'fast-check'
-import { formatCents } from './money'
+import { formatCents, parseEuros } from './money'
 
 const norm = (s: string) => s.replace(/[  ]/g, ' ')
 
@@ -26,6 +26,31 @@ describe('formatCents', () => {
       fc.property(fc.integer({ min: -1_000_000_000, max: 1_000_000_000 }), (cents) => {
         const text = norm(formatCents(cents)).replace(/[^\d,-]/g, '').replace(',', '.')
         expect(Math.round(Number(text) * 100)).toBe(cents)
+      }),
+    )
+  })
+})
+
+describe('parseEuros', () => {
+  it.each([
+    ['850', 85000],
+    ['850,5', 85050],
+    ['850,50', 85050],
+    ['850.50', 85050],
+    ['0,05', 5],
+    ['0', 0],
+    ['1 250,00', 125000],
+    [' 1 250 ', 125000],
+    ['12,3', 1230],
+  ])('lit %j comme %i centimes', (input, cents) => expect(parseEuros(input)).toBe(cents))
+
+  it.each(['', 'abc', '-5', '12,345', '1,2,3', '12 €', '1e3', ',5', '.', '99999999999'])('refuse %j', (input) => expect(parseEuros(input)).toBeNull())
+
+  it('propriété : relire le formatage donne les mêmes centimes', () => {
+    fc.assert(
+      fc.property(fc.integer({ min: 0, max: 99_999_999 }), (cents) => {
+        const text = `${Math.floor(cents / 100)},${String(cents % 100).padStart(2, '0')}`
+        expect(parseEuros(text)).toBe(cents)
       }),
     )
   })

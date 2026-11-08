@@ -1,3 +1,6 @@
+'use client'
+
+import { useId } from 'react'
 import type { ReactNode } from 'react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
@@ -21,7 +24,9 @@ interface FieldProps {
 
 /** Champ de formulaire accessible : libellé, aide et erreur reliés au champ. */
 export function TextField({ name, label, state, type = 'text', defaultValue, hint, required, autoComplete, inputMode, multiline, idPrefix = '' }: FieldProps) {
-  const id = `${idPrefix}${name}`
+  // Identifiant unique par instance : Next conserve les pages quittées dans le DOM, deux champs du même nom ne doivent pas partager d'id.
+  const uid = useId()
+  const id = `${idPrefix}${name}${uid}`
   const errors = state.fieldErrors?.[name]
   const describedBy = [errors ? `${id}-error` : null, hint ? `${id}-hint` : null].filter(Boolean).join(' ') || undefined
   return (
@@ -80,12 +85,15 @@ export function SelectField({
   state: FormState
   idPrefix?: string
 }) {
-  const id = `${idPrefix}${name}`
+  const uid = useId()
+  const id = `${idPrefix}${name}${uid}`
   const errors = state.fieldErrors?.[name]
   return (
     <div className="grid gap-1.5">
       <Label htmlFor={id}>{label}</Label>
       <select
+        // La clé force un nouveau champ quand la valeur renvoyée change : défaut d'un <select> déjà monté non réappliqué.
+        key={state.values?.[name] ?? 'initial'}
         id={id}
         name={name}
         defaultValue={state.values?.[name] ?? defaultValue}

@@ -4,7 +4,10 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { z } from 'zod'
 import { requireSection } from '@/domains/identity/entity-access'
+import { listLeasesForProperty } from '@/domains/leasing/service'
+import { LEASE_STATUS_LABELS } from '@/domains/leasing/status'
 import { getProperty, listAccessCodes, listNotes } from '@/domains/properties/service'
+import { formatDateFr } from '@/lib/dates'
 import { AccessCodeForm, ArchiveForm, DeleteCodeForm, NoteForm, PropertyForm } from '../forms'
 
 export const metadata: Metadata = { title: 'Bien — Loyo-reg' }
@@ -21,7 +24,12 @@ async function PropertySheet({ params }: { params: Promise<{ entityId: string; p
   const canWrite = permissions.includes('property:write')
   const canSeeCodes = permissions.includes('sensitive:read')
   const canWriteCodes = permissions.includes('sensitive:write')
-  const [notes, codes] = await Promise.all([listNotes(propertyId), canSeeCodes ? listAccessCodes(propertyId) : Promise.resolve([])])
+  const canSeeLeases = permissions.includes('lease:read')
+  const [notes, codes, leases] = await Promise.all([
+    listNotes(propertyId),
+    canSeeCodes ? listAccessCodes(propertyId) : Promise.resolve([]),
+    canSeeLeases ? listLeasesForProperty(entityId, propertyId) : Promise.resolve([]),
+  ])
 
   return (
     <div className="grid gap-10">
@@ -55,6 +63,29 @@ async function PropertySheet({ params }: { params: Promise<{ entityId: string; p
             <p className="text-sm whitespace-pre-line">{property.description}</p>
           </section>
         )
+      )}
+
+      {canSeeLeases && (
+        <section aria-labelledby="occupations" className="grid max-w-xl gap-3">
+          <h2 id="occupations" className="text-lg font-semibold">
+            Historique des occupations
+          </h2>
+          {leases.length === 0 ? (
+            <p className="text-muted-foreground text-sm">Ce bien n&apos;a encore jamais été loué.</p>
+          ) : (
+            <ul className="grid gap-2">
+              {leases.map((l) => (
+                <li key={l.id} className="rounded-lg border p-3 text-sm" data-testid="occupation">
+                  <Link href={`/espace/${entityId}/baux/${l.id}`} className="font-medium underline">
+                    {formatDateFr(l.startDate)} {l.endDate ? `→ ${formatDateFr(l.endDate)}` : '→ en cours'}
+                  </Link>
+                  <span className="text-muted-foreground"> · {LEASE_STATUS_LABELS[l.status]}</span>
+                  <p>{l.allTenants.join(', ')}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       )}
 
       <section aria-labelledby="notes" className="grid max-w-xl gap-3">
