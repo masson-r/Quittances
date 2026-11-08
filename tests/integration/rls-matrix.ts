@@ -296,6 +296,20 @@ export const RLS_MATRIX: Record<string, TableSpec> = {
     },
     expected: { ...serviceRoleOnly, service_role: serviceCrud },
   },
+  tenant_access: {
+    seed:
+      PROPERTY_SEED +
+      `insert into public.invitations (entity_id, kind, tenant_id, token_hash, created_by) values (${E_ID}, 'tenant', ${TENANT}, 'matrix-hash-t', ${P1});
+       insert into public.tenant_access (entity_id, tenant_id, profile_id, invitation_id, consent_version)
+         select ${E_ID}, ${TENANT}, ${P3}, id, 'v1' from public.invitations where token_hash = 'matrix-hash-t';`,
+    statements: {
+      select: 'select * from public.tenant_access',
+      insert: `insert into public.tenant_access (entity_id, tenant_id, profile_id, invitation_id, consent_version) select ${E_ID}, ${TENANT}, ${P1}, id, 'v1' from public.invitations limit 1`,
+      update: "update public.tenant_access set status = 'revoked', ended_at = now()",
+      delete: 'delete from public.tenant_access',
+    },
+    expected: { ...serviceRoleOnly, service_role: { ...nothing, select: 'allowed' } },
+  },
 }
 
 /** Fonctions SECURITY DEFINER autorisées (schéma app uniquement), sous la forme app.nom. */
@@ -312,4 +326,11 @@ export const ALLOWED_SECURITY_DEFINER = [
   'app.create_due_rent_charges',
   'app.regenerate_recovery_codes',
   'app.use_recovery_code',
+  'app.consume_tenant_invitation',
+  'app.decide_tenant_access',
+  'app.revoke_tenant_access',
+  'app.withdraw_tenant_consent',
+  'app.expire_tenant_access',
+  'app.my_tenant_access',
+  'app.tenant_access_overview',
 ]
