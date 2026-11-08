@@ -310,6 +310,20 @@ export const RLS_MATRIX: Record<string, TableSpec> = {
     },
     expected: { ...serviceRoleOnly, service_role: { ...nothing, select: 'allowed' } },
   },
+  member_signatures: {
+    seed:
+      IDENTITY_SEED +
+      `insert into public.member_signatures (entity_id, membership_id, profile_id, content_type, width, height, byte_size, sha256, image)
+         select ${E_ID}, id, ${P1}, 'image/png', 10, 10, 3, 'matrix-sha', decode('010203', 'hex') from public.entity_memberships where profile_id = ${P1};`,
+    statements: {
+      select: 'select * from public.member_signatures',
+      insert: `insert into public.member_signatures (entity_id, membership_id, profile_id, content_type, width, height, byte_size, sha256, image)
+         values (${E_ID}, (select id from public.entity_memberships where profile_id = ${P1}), ${P1}, 'image/png', 10, 10, 3, 'matrix-sha-2', decode('010203', 'hex'))`,
+      update: 'update public.member_signatures set active = false, retired_at = now()',
+      delete: 'delete from public.member_signatures',
+    },
+    expected: { ...serviceRoleOnly, service_role: { ...nothing, select: 'allowed' } },
+  },
 }
 
 /** Fonctions SECURITY DEFINER autorisées (schéma app uniquement), sous la forme app.nom. */
