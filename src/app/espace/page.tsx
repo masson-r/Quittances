@@ -32,6 +32,12 @@ async function Welcome() {
           </ul>
         )}
       </section>
+      <p className="text-sm">
+        Vous êtes locataire ?{' '}
+        <Link href="/mon-espace" className="underline">
+          Accéder à mon espace locataire
+        </Link>
+      </p>
     </div>
   )
 }

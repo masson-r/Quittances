@@ -5,6 +5,9 @@ import { notFound } from 'next/navigation'
 import { z } from 'zod'
 import { requireSection } from '@/domains/identity/entity-access'
 import { getPrivateDetails, getTenant, tenantName } from '@/domains/tenants/service'
+import { AccessList } from '@/components/tenant-access/access-list'
+import { InviteTenantForm } from '@/components/tenant-access/forms'
+import { listAccessOverview } from '@/domains/tenant-access/service'
 import { ArchiveTenantForm, PrivateDetailsForm, TenantForm } from '../forms'
 
 export const metadata: Metadata = { title: 'Dossier locataire — Loyo-reg' }
@@ -20,6 +23,8 @@ async function TenantSheet({ params }: { params: Promise<{ entityId: string; ten
   const canSeeSensitive = permissions.includes('sensitive:read')
   const canWriteSensitive = permissions.includes('sensitive:write')
   const details = canSeeSensitive ? await getPrivateDetails(tenantId) : null
+  const accesses = canWrite ? (await listAccessOverview(entityId)).filter((r) => r.tenantId === tenantId) : []
+  const hasActive = accesses.some((r) => r.status === 'active')
 
   return (
     <div className="grid gap-10">
@@ -62,6 +67,17 @@ async function TenantSheet({ params }: { params: Promise<{ entityId: string; ten
           ) : (
             <p className="text-sm">Lecture seule.</p>
           )}
+        </section>
+      )}
+
+      {canWrite && (
+        <section aria-labelledby="portail" className="grid max-w-xl gap-3">
+          <h2 id="portail" className="text-lg font-semibold">
+            Accès du locataire à ses quittances
+          </h2>
+          {tenant.paperDeliveryRequested && <p className="text-sm font-medium">Remise papier demandée par le locataire.</p>}
+          <AccessList entityId={entityId} rows={accesses} showTenant={false} />
+          {!hasActive && !tenant.archivedAt && <InviteTenantForm entityId={entityId} tenantId={tenantId} renew={accesses.length > 0} />}
         </section>
       )}
 

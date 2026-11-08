@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { requireSection } from '@/domains/identity/entity-access'
 import { listTenants, tenantName } from '@/domains/tenants/service'
 import { buttonVariants } from '@/components/ui/button'
+import { AccessList } from '@/components/tenant-access/access-list'
+import { listAccessOverview } from '@/domains/tenant-access/service'
 
 export const metadata: Metadata = { title: 'Locataires — Loyo-reg' }
 
@@ -18,6 +20,7 @@ async function TenantsList({
   const { entityName, permissions } = await requireSection(entityId, 'locataires')
   const showArchived = (await searchParams).archives === '1'
   const tenants = await listTenants(entityId, showArchived)
+  const pending = permissions.includes('tenant:write') ? (await listAccessOverview(entityId)).filter((r) => r.status === 'pending') : []
 
   return (
     <div className="grid gap-6">
@@ -32,6 +35,15 @@ async function TenantsList({
           </Link>
         )}
       </header>
+
+      {pending.length > 0 && (
+        <section aria-labelledby="demandes" className="grid gap-3">
+          <h2 id="demandes" className="text-lg font-semibold">
+            Demandes de rattachement en attente ({pending.length})
+          </h2>
+          <AccessList entityId={entityId} rows={pending} showTenant />
+        </section>
+      )}
 
       <p className="text-sm">
         <Link href={showArchived ? `/espace/${entityId}/locataires` : `/espace/${entityId}/locataires?archives=1`} className="underline">
