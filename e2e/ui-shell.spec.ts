@@ -48,7 +48,7 @@ test.describe("navigation de l'espace propriétaire", () => {
     await expect(page).toHaveURL(/\/tableau-de-bord$/)
 
     const menu = page.getByRole('navigation', { name: MENU })
-    for (const label of ['Tableau de bord', 'Biens', 'Locataires', 'Baux', 'Échéances et paiements', 'Quittances', 'Dépenses', 'Membres']) {
+    for (const label of ['Tableau de bord', 'Biens', 'Locataires', 'Baux', 'Échéances et paiements', 'Impayés', 'Quittances', 'Dépenses', 'Membres']) {
       await expect(menu.getByRole('link', { name: label })).toBeVisible()
     }
     await expect(menu.getByRole('link', { name: 'Tableau de bord' })).toHaveAttribute('aria-current', 'page')
@@ -58,6 +58,10 @@ test.describe("navigation de l'espace propriétaire", () => {
     await menu.getByRole('link', { name: 'Biens' }).click()
     await expect(page.getByRole('heading', { name: 'Biens', level: 1 })).toBeVisible()
     await expect(menu.getByRole('link', { name: 'Biens' })).toHaveAttribute('aria-current', 'page')
+
+    // Les sections pas encore construites affichent une mention claire.
+    await menu.getByRole('link', { name: 'Quittances' }).click()
+    await expect(page.getByRole('heading', { name: 'Quittances', level: 1 })).toBeVisible()
     await expect(page.getByText('Cette section sera disponible prochainement.').filter({ visible: true })).toHaveCount(1)
   })
 
