@@ -57,8 +57,8 @@ describe('app.write_audit', () => {
   it("prend l'auteur dans la session de l'utilisateur, sans se fier aux paramètres", async () => {
     await inRollback(async (c) => {
       await c.query("select set_config('request.jwt.claims', $1, true)", [JSON.stringify({ sub: USER, role: 'authenticated' })])
-      await c.query("select app.write_audit(null, 'lease.created', 'leases', null, '{}'::jsonb, 'operator')")
-      const { rows } = await c.query("select actor_kind, actor_id from public.audit_logs where action = 'lease.created'")
+      await c.query("select app.write_audit(null, 'test.session_actor', 'leases', null, '{}'::jsonb, 'operator')")
+      const { rows } = await c.query("select actor_kind, actor_id from public.audit_logs where action = 'test.session_actor'")
       expect(rows[0]).toEqual({ actor_kind: 'user', actor_id: USER })
     })
   })

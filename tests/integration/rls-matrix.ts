@@ -52,6 +52,17 @@ const LEASE_SEED =
   `insert into public.leases (id, entity_id, property_id, start_date, due_day) values (${LEASE}, ${E_ID}, ${PROP}, '2026-01-01', 5);
    insert into public.lease_tenants (entity_id, lease_id, tenant_id, start_date) values (${E_ID}, ${LEASE}, ${TENANT}, '2026-01-01');
    insert into public.rental_terms (entity_id, lease_id, effective_from, rent_cents, charges_cents) values (${E_ID}, ${LEASE}, '2026-01-01', 80000, 5000);`
+
+const CHARGE = "'00000000-0000-4000-8000-0000000000e1'"
+const CHARGE_2 = "'00000000-0000-4000-8000-0000000000e2'"
+const PAYMENT = "'00000000-0000-4000-8000-0000000000e3'"
+const FINANCE_SEED =
+  LEASE_SEED +
+  `insert into public.rent_charges (id, entity_id, lease_id, period_start, period_end, due_on, rent_cents, charges_cents) values
+     (${CHARGE}, ${E_ID}, ${LEASE}, '2026-01-01', '2026-01-31', '2026-01-05', 80000, 5000),
+     (${CHARGE_2}, ${E_ID}, ${LEASE}, '2026-03-01', '2026-03-31', '2026-03-05', 80000, 5000);
+   insert into public.payments (id, entity_id, lease_id, amount_cents, received_on, mode) values (${PAYMENT}, ${E_ID}, ${LEASE}, 85000, '2026-01-04', 'transfer');
+   insert into public.payment_allocations (entity_id, lease_id, payment_id, rent_charge_id, amount_cents) values (${E_ID}, ${LEASE}, ${PAYMENT}, ${CHARGE}, 50000);`
 const serviceCrud = { ...nothing, select: 'allowed', insert: 'allowed', update: 'allowed' } as Record<Action, Outcome>
 
 export const RLS_MATRIX: Record<string, TableSpec> = {
@@ -242,6 +253,36 @@ export const RLS_MATRIX: Record<string, TableSpec> = {
       insert: `insert into public.rental_terms (entity_id, lease_id, effective_from, rent_cents, charges_cents) values (${E_ID}, ${LEASE}, '2026-06-01', 82000, 5000)`,
       update: "update public.rental_terms set reason = 'matrice'",
       delete: 'delete from public.rental_terms',
+    },
+    expected: { ...serviceRoleOnly, service_role: serviceCrud },
+  },
+  rent_charges: {
+    seed: FINANCE_SEED,
+    statements: {
+      select: 'select * from public.rent_charges',
+      insert: `insert into public.rent_charges (entity_id, lease_id, period_start, period_end, due_on, rent_cents, charges_cents) values (${E_ID}, ${LEASE}, '2026-02-01', '2026-02-28', '2026-02-05', 80000, 5000)`,
+      update: `update public.rent_charges set rent_cents = 81000 where id = ${CHARGE_2}`,
+      delete: 'delete from public.rent_charges',
+    },
+    expected: { ...serviceRoleOnly, service_role: serviceCrud },
+  },
+  payments: {
+    seed: FINANCE_SEED,
+    statements: {
+      select: 'select * from public.payments',
+      insert: `insert into public.payments (entity_id, lease_id, amount_cents, received_on, mode) values (${E_ID}, ${LEASE}, 1000, '2026-02-01', 'cash')`,
+      update: "update public.payments set comment = 'matrice'",
+      delete: 'delete from public.payments',
+    },
+    expected: { ...serviceRoleOnly, service_role: serviceCrud },
+  },
+  payment_allocations: {
+    seed: FINANCE_SEED,
+    statements: {
+      select: 'select * from public.payment_allocations',
+      insert: `insert into public.payment_allocations (entity_id, lease_id, payment_id, rent_charge_id, amount_cents) values (${E_ID}, ${LEASE}, ${PAYMENT}, ${CHARGE}, 1000)`,
+      update: "update public.payment_allocations set reversed_at = now(), reversal_reason = 'matrice'",
+      delete: 'delete from public.payment_allocations',
     },
     expected: { ...serviceRoleOnly, service_role: serviceCrud },
   },
