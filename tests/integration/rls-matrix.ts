@@ -333,4 +333,7 @@ export const ALLOWED_SECURITY_DEFINER = [
   'app.expire_tenant_access',
   'app.my_tenant_access',
   'app.tenant_access_overview',
+  'app.my_tenant_dossiers',
+  'app.my_tenant_leases',
+  'app.update_my_contact',
 ]
