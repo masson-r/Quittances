@@ -324,6 +324,34 @@ export const RLS_MATRIX: Record<string, TableSpec> = {
     },
     expected: { ...serviceRoleOnly, service_role: { ...nothing, select: 'allowed' } },
   },
+  receipt_counters: {
+    seed: FINANCE_SEED + `insert into public.receipt_counters (entity_id, kind, year_month, last_number) values (${E_ID}, 'quittance', '2026-01', 1);`,
+    statements: {
+      select: 'select * from public.receipt_counters',
+      insert: `insert into public.receipt_counters (entity_id, kind, year_month, last_number) values (${E_ID}, 'quittance', '2026-02', 1)`,
+      update: 'update public.receipt_counters set last_number = 9',
+      delete: 'delete from public.receipt_counters',
+    },
+    expected: { anon: nothing, authenticated: nothing, service_role: nothing },
+  },
+  receipts: {
+    seed:
+      FINANCE_SEED +
+      `insert into public.receipts (entity_id, kind, number, lease_id, rent_charge_id, payment_id, period_start, period_end, issued_on, paid_on,
+           proposed_issued_on, proposed_paid_on, amount_cents, snapshot, issued_by)
+         values (${E_ID}, 'partial_receipt', 'REC-2026-01-0001', ${LEASE}, ${CHARGE}, ${PAYMENT}, '2026-01-01', '2026-01-31', '2026-01-10', '2026-01-04',
+           '2026-01-10', '2026-01-04', 50000, '{}'::jsonb, ${P1});`,
+    statements: {
+      select: 'select * from public.receipts',
+      insert: `insert into public.receipts (entity_id, kind, number, lease_id, rent_charge_id, payment_id, period_start, period_end, issued_on, paid_on,
+           proposed_issued_on, proposed_paid_on, amount_cents, snapshot, issued_by)
+         values (${E_ID}, 'partial_receipt', 'REC-2026-01-0002', ${LEASE}, ${CHARGE}, ${PAYMENT}, '2026-01-01', '2026-01-31', '2026-01-10', '2026-01-04',
+           '2026-01-10', '2026-01-04', 100, '{}'::jsonb, ${P1})`,
+      update: "update public.receipts set cancelled_at = now(), cancelled_by = null, cancellation_reason = 'matrice'",
+      delete: 'delete from public.receipts',
+    },
+    expected: { anon: nothing, authenticated: nothing, service_role: { ...nothing, select: 'allowed' } },
+  },
 }
 
 /** Fonctions SECURITY DEFINER autorisées (schéma app uniquement), sous la forme app.nom. */
@@ -350,4 +378,10 @@ export const ALLOWED_SECURITY_DEFINER = [
   'app.my_tenant_dossiers',
   'app.my_tenant_leases',
   'app.update_my_contact',
+  'app.issue_receipt_core',
+  'app.issue_receipt',
+  'app.attach_receipt_file',
+  'app.cancel_receipt',
+  'app.replace_receipt',
+  'app.my_receipts',
 ]
