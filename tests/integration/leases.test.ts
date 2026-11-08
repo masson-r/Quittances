@@ -223,6 +223,7 @@ describe('conditions de loyer', () => {
 describe('fin de bail', () => {
   it('end_lease ferme les présences ouvertes et fixe la date de fin', async () => {
     await world(async (c) => {
+      await c.query("select set_config('app.environment', 'test', true), set_config('app.today_override', '2026-07-15', true)")
       await asUser(c, U.managerA)
       const lease = await createLease(c, { tenants: [T.a, T.a2] })
       await c.query("select public.end_lease($1, '2026-08-31')", [lease])

@@ -299,6 +299,7 @@ export const ALLOWED_SECURITY_DEFINER = [
   'app.revoke_sessions_on_disable',
   'app.audit_mfa',
   'app.consume_invitation',
+  'app.create_due_rent_charges',
   'app.regenerate_recovery_codes',
   'app.use_recovery_code',
 ]

@@ -3,6 +3,13 @@ import { adminWithStructure, confirmedUser, makeMember, waitForForms } from './s
 import { blockingViolations } from './support/axe'
 import { operatorQuery } from './support/db'
 
+const iso = (d: Date) => d.toISOString().slice(0, 10)
+const now = new Date()
+/** Dernier jour du mois en cours : les échéances échues du bail sont rattrapées à sa création, la fin ne peut pas les précéder. */
+const END_DATE = iso(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0)))
+const NEXT_DAY = iso(new Date(new Date(`${END_DATE}T00:00:00Z`).getTime() + 86_400_000))
+const french = (date: string) => new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`))
+
 async function seed(entityId: string) {
   const property = await operatorQuery("insert into public.properties (entity_id, label, address_line1, postal_code, city) values ($1, 'Studio Gare', '3 rue de la Gare', '69003', 'Lyon') returning id", [entityId])
   const tenants = await operatorQuery(
@@ -66,9 +73,9 @@ test('baux : création avec colocataires, conditions successives, sortie, fin de
   await expect(main.getByTestId('presence').filter({ hasText: 'Paul Durand' })).toContainText("jusqu'au 31 octobre 2025")
 
   // Fin de bail
-  await main.getByLabel('Date de fin du bail').fill('2025-12-31')
+  await main.getByLabel('Date de fin du bail').fill(END_DATE)
   await main.getByRole('button', { name: 'Mettre fin au bail' }).click()
-  await expect(main.getByText(/Terminé · du 1 janvier 2025 au 31 décembre 2025/)).toBeVisible()
+  await expect(main.getByText(`du 1 janvier 2025 au ${french(END_DATE)}`)).toBeVisible()
 
   // Deuxième bail : le chevauchement est refusé, le bail successif accepté
   await page.goto(`/espace/${admin.entityId}/baux/nouveau`)
@@ -82,9 +89,9 @@ test('baux : création avec colocataires, conditions successives, sortie, fin de
     await main.getByLabel('Provisions pour charges (€)').fill('0')
     await main.getByRole('button', { name: 'Créer le bail' }).click()
   }
-  await create('2025-12-01')
+  await create(END_DATE)
   await expect(main.getByText('Ce bien a déjà un bail sur tout ou partie de cette période.')).toBeVisible()
-  await main.getByLabel('Date de début').fill('2026-01-01')
+  await main.getByLabel('Date de début').fill(NEXT_DAY)
   await main.getByRole('button', { name: 'Créer le bail' }).click()
   await expect(main.getByRole('heading', { name: 'Bail — Studio Gare', level: 1 })).toBeVisible()
 
@@ -92,8 +99,8 @@ test('baux : création avec colocataires, conditions successives, sortie, fin de
   await page.goto(`/espace/${admin.entityId}/biens/${propertyId}`)
   const occupations = main.getByTestId('occupation')
   await expect(occupations).toHaveCount(2)
-  await expect(occupations.first()).toContainText('1 janvier 2026 → en cours')
-  await expect(occupations.last()).toContainText('1 janvier 2025 → 31 décembre 2025')
+  await expect(occupations.first()).toContainText(`${french(NEXT_DAY)} → en cours`)
+  await expect(occupations.last()).toContainText(`1 janvier 2025 → ${french(END_DATE)}`)
   await expect(occupations.last()).toContainText('Alice Martin')
   await expect(occupations.last()).toContainText('Paul Durand')
   await expect(page.getByRole('heading', { name: "Historique des occupations" })).toBeVisible()
