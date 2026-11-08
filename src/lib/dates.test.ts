@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDateFr, isValidIsoDate, todayInParis } from './dates'
+import { daysBetween, formatDateFr, formatMonthFr, isValidIsoDate, todayInParis } from './dates'
 
 describe('isValidIsoDate', () => {
   it.each(['2026-02-28', '2024-02-29', '1900-01-01', '2200-12-31'])('accepte %s', (v) => expect(isValidIsoDate(v)).toBe(true))
@@ -20,5 +20,24 @@ describe('formatDateFr', () => {
     expect(formatDateFr('2026-03-05')).toBe('5 mars 2026')
     expect(formatDateFr('2026-12-31')).toBe('31 décembre 2026')
     expect(formatDateFr('2026-01-01')).toBe('1 janvier 2026')
+  })
+})
+
+describe('formatMonthFr', () => {
+  it('écrit le mois et l\'année en français', () => {
+    expect(formatMonthFr('2026-03-01')).toBe('mars 2026')
+    expect(formatMonthFr('2026-12-31')).toBe('décembre 2026')
+    expect(formatMonthFr('2026-02-28')).toBe('février 2026')
+  })
+})
+
+describe('daysBetween', () => {
+  it("compte les jours, y compris à travers un changement d'heure", () => {
+    expect(daysBetween('2026-03-05', '2026-03-06')).toBe(1)
+    expect(daysBetween('2026-03-05', '2026-03-05')).toBe(0)
+    expect(daysBetween('2026-03-28', '2026-03-30')).toBe(2)
+    expect(daysBetween('2026-10-24', '2026-10-26')).toBe(2)
+    expect(daysBetween('2025-12-31', '2026-01-01')).toBe(1)
+    expect(daysBetween('2026-03-06', '2026-03-05')).toBe(-1)
   })
 })

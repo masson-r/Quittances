@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import fc from 'fast-check'
-import { formatCents, parseEuros } from './money'
+import { formatCents, formatEurosInput, parseEuros } from './money'
 
 const norm = (s: string) => s.replace(/[  ]/g, ' ')
 
@@ -51,6 +51,26 @@ describe('parseEuros', () => {
       fc.property(fc.integer({ min: 0, max: 99_999_999 }), (cents) => {
         const text = `${Math.floor(cents / 100)},${String(cents % 100).padStart(2, '0')}`
         expect(parseEuros(text)).toBe(cents)
+      }),
+    )
+  })
+})
+
+describe('formatEurosInput', () => {
+  it('écrit les centimes en euros avec deux décimales et une virgule', () => {
+    expect(formatEurosInput(0)).toBe('0,00')
+    expect(formatEurosInput(5)).toBe('0,05')
+    expect(formatEurosInput(85050)).toBe('850,50')
+    expect(formatEurosInput(123456789)).toBe('1234567,89')
+  })
+  it('refuse un montant invalide', () => {
+    expect(() => formatEurosInput(-1)).toThrow()
+    expect(() => formatEurosInput(1.5)).toThrow()
+  })
+  it('propriété : parseEuros relit ce que formatEurosInput écrit', () => {
+    fc.assert(
+      fc.property(fc.integer({ min: 0, max: 99_999_999 }), (cents) => {
+        expect(parseEuros(formatEurosInput(cents))).toBe(cents)
       }),
     )
   })

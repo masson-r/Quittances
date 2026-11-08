@@ -1,31 +1,5 @@
 import { z } from 'zod'
-import { isValidIsoDate } from '@/lib/dates'
-import { parseEuros } from '@/lib/money'
-
-const requiredDate = (message: string) => z.string({ error: message }).trim().refine(isValidIsoDate, message)
-
-const optionalDate = (message: string) =>
-  z
-    .string()
-    .trim()
-    .transform((v) => (v === '' ? null : v))
-    .refine((v) => v === null || isValidIsoDate(v), message)
-
-const euros = (message: string, { required }: { required: boolean }) =>
-  z
-    .string()
-    .trim()
-    .transform((v, ctx) => {
-      if (v === '' && !required) return null
-      const cents = parseEuros(v)
-      if (cents === null) {
-        ctx.addIssue({ code: 'custom', message })
-        return z.NEVER
-      }
-      return cents
-    })
-
-const uuid = (message: string) => z.string({ error: message }).pipe(z.uuid(message))
+import { euros, optionalDate, requiredDate, uuidField as uuid } from '@/lib/zod-fields'
 
 const dueDay = z
   .string()

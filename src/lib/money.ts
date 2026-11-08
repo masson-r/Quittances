@@ -17,3 +17,9 @@ export function parseEuros(input: string): number | null {
   const cents = Number(match[1]) * 100 + Number((match[2] ?? '').padEnd(2, '0') || '0')
   return cents <= 99_999_999 ? cents : null
 }
+
+/** Centimes → texte de saisie en euros (« 850,50 »), sans symbole ni séparateur de milliers. */
+export function formatEurosInput(cents: number): string {
+  if (!Number.isSafeInteger(cents) || cents < 0) throw new RangeError(`Montant en centimes invalide : ${cents}`)
+  return `${Math.floor(cents / 100)},${String(cents % 100).padStart(2, '0')}`
+}

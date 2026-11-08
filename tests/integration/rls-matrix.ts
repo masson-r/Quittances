@@ -286,6 +286,16 @@ export const RLS_MATRIX: Record<string, TableSpec> = {
     },
     expected: { ...serviceRoleOnly, service_role: serviceCrud },
   },
+  charge_settlements: {
+    seed: FINANCE_SEED + `insert into public.charge_settlements (entity_id, lease_id, settled_on, amount_cents, mode, reason) values (${E_ID}, ${LEASE}, '2026-02-01', 1000, 'transfer', 'matrice');`,
+    statements: {
+      select: 'select * from public.charge_settlements',
+      insert: `insert into public.charge_settlements (entity_id, lease_id, settled_on, amount_cents, mode, reason) values (${E_ID}, ${LEASE}, '2026-02-02', 2000, 'transfer', 'autre')`,
+      update: "update public.charge_settlements set comment = 'matrice'",
+      delete: 'delete from public.charge_settlements',
+    },
+    expected: { ...serviceRoleOnly, service_role: serviceCrud },
+  },
 }
 
 /** Fonctions SECURITY DEFINER autorisées (schéma app uniquement), sous la forme app.nom. */

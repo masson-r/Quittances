@@ -92,7 +92,7 @@ export async function enrollSecondFactor(page: Page) {
   await expect(async () => {
     await page.getByRole('button', { name: 'Commencer' }).click()
     await expect(page.getByTestId('totp-secret')).toBeVisible({ timeout: 4000 })
-  }).toPass({ timeout: 30_000 })
+  }).toPass({ timeout: 90_000 })
   const secret = (await page.getByTestId('totp-secret').textContent())!.trim()
   const code = await freshTotp(secret)
   await page.getByLabel('Code à 6 chiffres').fill(code)

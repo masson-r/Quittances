@@ -17,3 +17,15 @@ const longDate = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long', timeZone:
 export function formatDateFr(iso: string): string {
   return longDate.format(new Date(`${iso}T12:00:00Z`))
 }
+
+const monthYear = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+
+/** « mars 2026 » à partir d'une date AAAA-MM-JJ. */
+export function formatMonthFr(iso: string): string {
+  return monthYear.format(new Date(`${iso.slice(0, 7)}-15T12:00:00Z`))
+}
+
+/** Nombre de jours entiers entre deux dates AAAA-MM-JJ (positif si `to` est postérieure à `from`). */
+export function daysBetween(from: string, to: string): number {
+  return Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000)
+}
