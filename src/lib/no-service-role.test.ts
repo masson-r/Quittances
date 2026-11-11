@@ -5,7 +5,7 @@ import { join, sep } from 'node:path'
 // La clé service_role reste hors de l'application : outil de l'opérateur (scripts/operator) uniquement.
 // Les modules serveur isolés prévus plus tard (consommation des invitations, liens de téléchargement)
 // s'ajoutent explicitement à cette liste, avec leur ticket.
-const ALLOWED: string[] = []
+const ALLOWED: string[] = ['src/lib/storage/receipts-bucket.ts']
 const FORBIDDEN = /service_role|SUPABASE_SECRET_KEY|sb_secret_/
 
 function sources(dir: string): string[] {

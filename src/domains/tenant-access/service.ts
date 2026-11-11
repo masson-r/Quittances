@@ -127,3 +127,30 @@ export async function listAccessOverview(entityId: string): Promise<AccessOvervi
     consentWithdrawnAt: r.consent_withdrawn_at as string | null,
   }))
 }
+
+export interface MyDocument {
+  id: string
+  kind: 'quittance' | 'partial_receipt'
+  number: string
+  entityName: string
+  propertyLabel: string
+  periodStart: string
+  amountCents: number
+  issuedOn: string
+}
+
+/** Quittances et reçus mis à disposition du locataire rattaché (la base filtre : annulés, révoqués, consentement retiré). */
+export async function listMyDocuments(): Promise<MyDocument[]> {
+  const supabase = await createClient()
+  const { data } = await supabase.rpc('my_receipts')
+  return ((data ?? []) as Row[]).map((r) => ({
+    id: r.id as string,
+    kind: r.kind as MyDocument['kind'],
+    number: r.number as string,
+    entityName: r.entity_name as string,
+    propertyLabel: r.property_label as string,
+    periodStart: r.period_start as string,
+    amountCents: r.amount_cents as number,
+    issuedOn: r.issued_on as string,
+  }))
+}

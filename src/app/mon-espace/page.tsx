@@ -3,15 +3,15 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { requireUser } from '@/domains/identity/session'
 import { formatCents } from '@/lib/money'
-import { formatDateFr } from '@/lib/dates'
-import { ACCESS_STATUS_LABELS, listMyDossiers, listMyLeases, listMyRequests } from '@/domains/tenant-access/service'
+import { formatDateFr, formatMonthFr } from '@/lib/dates'
+import { ACCESS_STATUS_LABELS, listMyDocuments, listMyDossiers, listMyLeases, listMyRequests } from '@/domains/tenant-access/service'
 import { ContactForm, DetachButton, WithdrawConsentButton } from '@/components/tenant-access/forms'
 
 export const metadata: Metadata = { title: 'Mon espace locataire — Loyo-reg' }
 
 async function TenantSpace() {
   const user = await requireUser()
-  const [requests, dossiers, leases] = await Promise.all([listMyRequests(), listMyDossiers(), listMyLeases()])
+  const [requests, dossiers, leases, documents] = await Promise.all([listMyRequests(), listMyDossiers(), listMyLeases(), listMyDocuments()])
 
   return (
     <div className="grid gap-10">
@@ -56,6 +56,34 @@ async function TenantSpace() {
           </ul>
         )}
       </section>
+
+      {dossiers.length > 0 && (
+        <section aria-labelledby="documents" className="grid gap-3">
+          <h2 id="documents" className="text-lg font-semibold">
+            Mes quittances et reçus
+          </h2>
+          {documents.length === 0 ? (
+            <p className="text-muted-foreground rounded-lg border border-dashed p-4 text-sm" data-testid="no-documents">
+              Aucun document disponible en ligne pour le moment.
+            </p>
+          ) : (
+            <ul className="grid gap-2">
+              {documents.map((doc) => (
+                <li key={doc.id} className="flex flex-wrap items-baseline justify-between gap-2 rounded-lg border p-3 text-sm" data-testid="my-document">
+                  <span>
+                    <span className="font-medium">{doc.kind === 'quittance' ? 'Quittance' : 'Reçu partiel'}</span> · {doc.propertyLabel} · {formatMonthFr(doc.periodStart)} ·{' '}
+                    {formatCents(doc.amountCents)}
+                    <span className="text-muted-foreground"> · émis le {formatDateFr(doc.issuedOn)}</span>
+                  </span>
+                  <a href={`/documents/${doc.id}`} className="underline" aria-label={`Télécharger ${doc.number}`}>
+                    Télécharger
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
 
       {dossiers.map((d) => (
         <section key={d.accessId} aria-labelledby={`dossier-${d.tenantId}`} className="grid gap-6" data-testid="my-dossier">

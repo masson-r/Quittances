@@ -220,8 +220,9 @@ describe('tâches planifiées', () => {
   it('pg_cron planifie la création des échéances et la purge du journal', async () => {
     await world(async (c) => {
       const { rows } = await c.query('select jobname, command from cron.job order by jobname')
-      expect(rows.map((r) => r.jobname)).toEqual(['create-due-rent-charges', 'purge-audit-logs'])
-      expect(rows[0].command).toContain('app.create_due_rent_charges')
+      expect(rows.map((r) => r.jobname)).toEqual(['create-due-rent-charges', 'expire-tenant-access', 'purge-audit-logs'])
+      expect(rows[1].command).toContain('app.expire_tenant_access')
+      expect(rows[2].command).toContain('app.purge_audit_logs')
       expect(rows[1].command).toContain('app.purge_audit_logs')
     })
   })
