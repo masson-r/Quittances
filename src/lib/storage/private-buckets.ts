@@ -7,7 +7,8 @@ import { createClient } from '@supabase/supabase-js'
  * Aucune politique Storage n'existe pour le navigateur : le bucket n'est atteignable que par ici.
  * L'appelant a déjà vérifié les droits de l'utilisateur (fonctions SQL ou RLS) avant d'appeler ce module.
  */
-const BUCKET = 'receipts'
+const RECEIPTS = 'receipts'
+const DOCUMENTS = 'documents'
 export const DOWNLOAD_LINK_SECONDS = 60
 
 function admin() {
@@ -22,20 +23,38 @@ export const receiptPath = (entityId: string, receiptId: string): string => `${e
 
 /** Dépose le PDF. Refuse d'écraser un fichier existant : un document émis ne change jamais. */
 export async function storeReceiptPdf(path: string, bytes: Uint8Array): Promise<void> {
-  const { error } = await admin().storage.from(BUCKET).upload(path, bytes, { contentType: 'application/pdf', upsert: false })
+  const { error } = await admin().storage.from(RECEIPTS).upload(path, bytes, { contentType: 'application/pdf', upsert: false })
   if (error) throw new Error(`Dépôt du PDF impossible : ${error.message}`)
 }
 
 /** Lien de téléchargement valable 60 secondes. */
 export async function createDownloadUrl(path: string, filename: string): Promise<string | null> {
-  const { data, error } = await admin().storage.from(BUCKET).createSignedUrl(path, DOWNLOAD_LINK_SECONDS, { download: filename })
+  const { data, error } = await admin().storage.from(RECEIPTS).createSignedUrl(path, DOWNLOAD_LINK_SECONDS, { download: filename })
   if (error || !data) return null
   return data.signedUrl
 }
 
 /** Contenu d'un fichier déjà déposé (contrôle d'intégrité). */
 export async function readReceiptPdf(path: string): Promise<Uint8Array | null> {
-  const { data, error } = await admin().storage.from(BUCKET).download(path)
+  const { data, error } = await admin().storage.from(RECEIPTS).download(path)
   if (error || !data) return null
   return new Uint8Array(await data.arrayBuffer())
+}
+
+/** Justificatifs de dépenses : bucket privé `documents`, chemin <structure>/<document>. */
+export const documentPath = (entityId: string, documentId: string): string => `${entityId}/${documentId}`
+
+export async function storeDocument(path: string, bytes: Uint8Array, contentType: string): Promise<void> {
+  const { error } = await admin().storage.from(DOCUMENTS).upload(path, bytes, { contentType, upsert: false })
+  if (error) throw new Error(`Dépôt du justificatif impossible : ${error.message}`)
+}
+
+export async function removeDocument(path: string): Promise<void> {
+  await admin().storage.from(DOCUMENTS).remove([path])
+}
+
+export async function createDocumentUrl(path: string, filename: string): Promise<string | null> {
+  const { data, error } = await admin().storage.from(DOCUMENTS).createSignedUrl(path, DOWNLOAD_LINK_SECONDS, { download: filename })
+  if (error || !data) return null
+  return data.signedUrl
 }

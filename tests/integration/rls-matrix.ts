@@ -352,6 +352,42 @@ export const RLS_MATRIX: Record<string, TableSpec> = {
     },
     expected: { anon: nothing, authenticated: nothing, service_role: { ...nothing, select: 'allowed' } },
   },
+  expense_categories: {
+    seed: IDENTITY_SEED,
+    statements: {
+      select: 'select * from public.expense_categories',
+      insert: `insert into public.expense_categories (entity_id, name) values (${E_ID}, 'Matrice')`,
+      update: "update public.expense_categories set name = 'Renommée'",
+      delete: 'delete from public.expense_categories',
+    },
+    expected: { ...serviceRoleOnly, service_role: { ...nothing, select: 'allowed' } },
+  },
+  documents: {
+    seed: IDENTITY_SEED + `insert into public.documents (id, entity_id, file_path, content_type, byte_size, sha256, original_name, created_by)
+         values ('00000000-0000-4000-8000-0000000000f7', ${E_ID}, ${E_ID}::text || '/00000000-0000-4000-8000-0000000000f7', 'application/pdf', 10, repeat('a', 64), 'facture.pdf', ${P1});`,
+    statements: {
+      select: 'select * from public.documents',
+      insert: `insert into public.documents (id, entity_id, file_path, content_type, byte_size, sha256, original_name, created_by)
+         values ('00000000-0000-4000-8000-0000000000f8', ${E_ID}, ${E_ID}::text || '/00000000-0000-4000-8000-0000000000f8', 'application/pdf', 10, repeat('a', 64), 'autre.pdf', ${P1})`,
+      update: "update public.documents set original_name = 'x.pdf'",
+      delete: 'delete from public.documents',
+    },
+    expected: { ...serviceRoleOnly, service_role: { ...nothing, select: 'allowed' } },
+  },
+  expenses: {
+    seed:
+      PROPERTY_SEED +
+      `insert into public.expenses (id, entity_id, property_id, category_id, expense_date, description, amount_cents)
+         select '00000000-0000-4000-8000-0000000000f9', ${E_ID}, ${PROP}, id, '2026-01-10', 'Matrice', 1000 from public.expense_categories where entity_id = ${E_ID} limit 1;`,
+    statements: {
+      select: 'select * from public.expenses',
+      insert: `insert into public.expenses (entity_id, property_id, category_id, expense_date, description, amount_cents)
+         values (${E_ID}, ${PROP}, (select id from public.expense_categories where entity_id = ${E_ID} limit 1), '2026-01-11', 'Autre', 500)`,
+      update: "update public.expenses set description = 'Modifiée'",
+      delete: 'delete from public.expenses',
+    },
+    expected: { ...serviceRoleOnly, service_role: serviceCrud },
+  },
 }
 
 /** Fonctions SECURITY DEFINER autorisées (schéma app uniquement), sous la forme app.nom. */
@@ -384,4 +420,5 @@ export const ALLOWED_SECURITY_DEFINER = [
   'app.cancel_receipt',
   'app.replace_receipt',
   'app.my_receipts',
+  'app.seed_expense_categories',
 ]

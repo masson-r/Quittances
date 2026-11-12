@@ -300,6 +300,7 @@ describe('concurrence', () => {
       }
       await admin.query('delete from public.leases where entity_id = $1', [entity])
       await admin.query('delete from public.properties where entity_id = $1', [entity])
+      await admin.query('delete from public.expense_categories where entity_id = $1', [entity])
       await admin.query('delete from public.ownership_entities where id = $1', [entity])
       await admin.end()
     }

@@ -1,7 +1,7 @@
 import 'server-only'
 import { createHash } from 'node:crypto'
 import { createClient } from '@/lib/supabase/server'
-import { receiptPath, storeReceiptPdf } from '@/lib/storage/receipts-bucket'
+import { receiptPath, storeReceiptPdf } from '@/lib/storage/private-buckets'
 import { byteaToBuffer } from '@/domains/signatures/service'
 import { buildReceiptPdf, type SignatureBytes } from './pdf'
 import { receiptSnapshotSchema } from './snapshot'

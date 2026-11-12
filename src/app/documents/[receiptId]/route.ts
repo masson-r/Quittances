@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/domains/identity/session'
-import { createDownloadUrl } from '@/lib/storage/receipts-bucket'
+import { createDownloadUrl } from '@/lib/storage/private-buckets'
 
 /**
  * Téléchargement d'un document : le droit est contrôlé ici (propriétaire : RLS sur `receipts` ; locataire :
