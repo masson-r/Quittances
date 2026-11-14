@@ -19,3 +19,7 @@ Commandes : `pnpm dev`, `pnpm typecheck`, `pnpm lint`, `pnpm build` ; base local
 - Sections pas encore construites : `SectionPlaceholder` (`src/components/app-shell`), à remplacer ticket par ticket. Une section qui ouvre un nouveau domaine l'ajoute à `NAV_ITEMS` (`src/domains/identity/navigation.ts`).
 - Chaque page de section commence par `requireSection(entityId, slug)` (`src/domains/identity/entity-access.ts`).
 - Mobile (moins de 768 px) : le menu se replie derrière le bouton « Menu ». Tests : `e2e/ui-shell.spec.ts` (axe sur bureau et mobile 390 px).
+
+## Exploitation
+
+Voir `docs/exploitation/` : [production.md](exploitation/production.md) (reprise du projet, accès direct, incidents), [environnements.md](exploitation/environnements.md), [operateur.md](exploitation/operateur.md), [reprise-historique.md](exploitation/reprise-historique.md), [accord-sous-traitance.md](exploitation/accord-sous-traitance.md) et la liste de [recette](recette.md).
