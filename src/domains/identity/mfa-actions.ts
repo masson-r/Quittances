@@ -15,6 +15,8 @@ export interface EnrollmentStart {
 export interface MfaFormState {
   fieldErrors?: FieldErrors
   error?: string
+  /** Code validé : le client ouvre alors l'espace par une navigation complète. */
+  verified?: boolean
   /** Codes de secours en clair : affichés une seule fois. */
   recoveryCodes?: string[]
 }
@@ -69,7 +71,9 @@ export async function verifyTotpAction(_: MfaFormState, formData: FormData): Pro
 
   const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId: factor.id, code: parsed.data.code })
   if (error) return { fieldErrors: { code: ['Ce code est incorrect ou expiré.'] } }
-  redirect('/espace')
+  // La session vient de passer au niveau aal2 : le navigateur recharge la page (navigation complète) au lieu de suivre une
+  // redirection, car son cache de routes garde sinon la redirection vers la vérification obtenue avant le code.
+  return { verified: true }
 }
 
 /** Second facteur perdu : un code de secours supprime le facteur, il faut en activer un nouveau. */

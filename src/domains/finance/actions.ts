@@ -36,6 +36,7 @@ function friendly(error: { code?: string; message?: string }): string {
     'annulée',
     'annulé',
     'Aucune condition',
+    'Un document émis',
   ]
   return known.some((k) => message.includes(k)) ? message.replace(/^.*?(?=[A-ZÉÀ])/, '') : GENERIC
 }

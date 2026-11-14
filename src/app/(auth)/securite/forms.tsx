@@ -151,6 +151,11 @@ export function EnrollForm({ afterRecovery }: { afterRecovery: boolean }) {
 
 export function VerifyForm() {
   const [state, action, pending] = useActionState(verifyTotpAction, initial)
+  useEffect(() => {
+    // Navigation complète voulue : un router.push réutiliserait le cache de routes qui redirige vers la vérification.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    if (state.verified) window.location.assign('/espace')
+  }, [state.verified])
   return (
     <form action={action} className="grid gap-4" noValidate>
       <ErrorAlert message={state.error} />
