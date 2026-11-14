@@ -70,10 +70,10 @@ Revue humaine, une seule fois, sur une quittance et un reçu partiel réels du s
 
 À lever **avant** l'utilisation réelle, décisions consignées dans des ADR :
 
-- [ ] Durée de conservation comptable côté bailleur.
-- [ ] Relecture de l'article 21 de la loi n° 89-462 sur Légifrance ; L. 112-6 et L. 112-7 (plafond des espèces) ; article 8-1 (solidarité des colocataires).
-- [ ] Sauvegardes supplémentaires du Storage (ADR 0005) : décision prise ou risque accepté par écrit.
-- [ ] Accord de sous-traitance relu et signé ([exploitation/accord-sous-traitance.md](exploitation/accord-sous-traitance.md)).
+- [x] Durée de conservation comptable côté bailleur : pas de purge automatique, aucune suppression avant vérification de la durée applicable à la structure ([ADR 0006](adr/0006-conservation-sans-purge-automatique.md)). *Durée précise à confirmer auprès du comptable.*
+- [x] Article 21 de la loi n° 89-462, L. 112-6 et L. 112-7 (espèces), article 8-1 (colocation) : décisions consignées ([ADR 0008](adr/0008-documents-especes-colocation.md)). *Relecture Légifrance sous la responsabilité de l'utilisateur.*
+- [x] Sauvegardes du Storage : risque accepté par écrit ([ADR 0007](adr/0007-sauvegardes-risque-accepte.md)).
+- [x] Accord de sous-traitance : l'utilisateur confirme que les contrats Supabase et Vercel incluent l'accord de traitement ([exploitation/accord-sous-traitance.md](exploitation/accord-sous-traitance.md)). *Trame à relire et signer ; analyse d'impact et rétention des journaux Auth encore à trancher.*
 
 ## 4. Signature de la recette
 

@@ -1,5 +1,5 @@
 ---
-status: accepted
+status: superseded by 0007-sauvegardes-risque-accepte.md
 ---
 
 # Sauvegardes supplémentaires et test de restauration reportés

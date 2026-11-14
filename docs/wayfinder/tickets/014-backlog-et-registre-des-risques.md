@@ -114,7 +114,7 @@ Decision issue du ticket clos sur les migrations : le tableau de decoupage (lot,
 |---|---|---|---|---|
 | R1 | Erreur de calcul financier (prorata, arrondi, affectation) | Moyenne | Élevé | fonctions pures à 100 % des branches, `fast-check`, invariants en base, recette |
 | R2 | Fuite de données entre structures ou entre locataires par une RLS erronée | Faible | Critique | clés composites, matrice déclarative, test de garde, droits relus à chaque requête |
-| R3 | **Perte de données : Storage non sauvegardé, aucune restauration testée (risque accepté)** | Moyenne | Élevé | jalon L6-04 avant données réelles ; données fictives uniquement d'ici là |
+| R3 | **Perte de données : Storage non sauvegardé, aucune restauration testée (risque accepté, ADR 0007)** | Moyenne | Élevé | risque accepté le 14/11/2026 ; à revoir au premier incident ; PDF remplaçables par annulation puis nouvelle émission |
 | R4 | Durée de conservation comptable incertaine, anonymisation prématurée ou tardive | Moyenne | Moyen | fonction manuelle, jalon L6-04 |
 | R5 | Mauvaise lecture des textes (quittance, consentement, mention « signé électroniquement » sans valeur de signature qualifiée) | Moyenne | Moyen | relecture Légifrance, formulation prudente, consentement stocké |
 | R6 | Reprise d'historique erronée ou incomplète | Moyenne | Élevé | `--dry-run`, rapport de totaux, tout ou rien, annulation d'un lot |
