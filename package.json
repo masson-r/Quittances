@@ -19,6 +19,7 @@
     "test:e2e": "playwright test",
     "seed:test": "tsx scripts/seed-test.ts",
     "operator:create-structure": "tsx scripts/operator/create-structure.ts",
+    "operator:import-history": "tsx scripts/operator/import-history.ts",
     "test:coverage": "vitest run --project unit --coverage"
   },
   "dependencies": {

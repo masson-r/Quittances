@@ -421,4 +421,6 @@ export const ALLOWED_SECURITY_DEFINER = [
   'app.replace_receipt',
   'app.my_receipts',
   'app.seed_expense_categories',
+  'app.import_history',
+  'app.cancel_import_batch',
 ]
