@@ -3,7 +3,7 @@
 import { ActionForm } from '@/components/forms/action-form'
 import { FormMessages, SelectField, TextField } from '@/components/forms/fields'
 import { Button } from '@/components/ui/button'
-import { createTenantAction, savePrivateDetailsAction, setTenantArchivedAction, updateTenantAction } from '@/domains/tenants/actions'
+import { anonymizeTenantAction, createTenantAction, savePrivateDetailsAction, setTenantArchivedAction, updateTenantAction } from '@/domains/tenants/actions'
 import { GUARANTOR_KINDS, GUARANTOR_LABELS, HOUSING_AIDS, HOUSING_AID_LABELS } from '@/domains/tenants/schemas'
 import type { PrivateDetails, Tenant } from '@/domains/tenants/service'
 
@@ -96,6 +96,28 @@ export function ArchiveTenantForm({ entityId, tenantId, archived }: { entityId: 
             {archived ? 'Restaurer le dossier' : 'Archiver le dossier'}
           </Button>
           {!archived && <p className="text-muted-foreground text-sm">Un dossier n&apos;est jamais supprimé : archivé, il disparaît des listes mais ses baux et quittances restent consultables.</p>}
+        </>
+      )}
+    </ActionForm>
+  )
+}
+
+export function AnonymizeTenantForm({ entityId, tenantId }: { entityId: string; tenantId: string }) {
+  return (
+    <ActionForm action={anonymizeTenantAction} className="grid max-w-md gap-2">
+      {(state, pending) => (
+        <>
+          <input type="hidden" name="entityId" value={entityId} />
+          <input type="hidden" name="tenantId" value={tenantId} />
+          <FormMessages state={state} />
+          <p className="text-muted-foreground text-sm">
+            Efface définitivement le nom, les coordonnées et les informations sensibles du dossier. Possible trois ans après la fin du dernier bail, une fois
+            l&apos;apurement final saisi. Les baux, paiements et quittances sont conservés.
+          </p>
+          <TextField name="confirm" label="Tapez ANONYMISER pour confirmer" state={state} idPrefix="anon-" />
+          <Button type="submit" variant="outline" disabled={pending} className="justify-self-start">
+            Anonymiser le dossier
+          </Button>
         </>
       )}
     </ActionForm>

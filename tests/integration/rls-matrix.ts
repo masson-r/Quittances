@@ -423,4 +423,5 @@ export const ALLOWED_SECURITY_DEFINER = [
   'app.seed_expense_categories',
   'app.import_history',
   'app.cancel_import_batch',
+  'app.anonymize_tenant',
 ]

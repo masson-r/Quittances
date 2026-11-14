@@ -8,7 +8,7 @@ import { getPrivateDetails, getTenant, tenantName } from '@/domains/tenants/serv
 import { AccessList } from '@/components/tenant-access/access-list'
 import { InviteTenantForm } from '@/components/tenant-access/forms'
 import { listAccessOverview } from '@/domains/tenant-access/service'
-import { ArchiveTenantForm, PrivateDetailsForm, TenantForm } from '../forms'
+import { AnonymizeTenantForm, ArchiveTenantForm, PrivateDetailsForm, TenantForm } from '../forms'
 
 export const metadata: Metadata = { title: 'Dossier locataire — Loyo-reg' }
 
@@ -87,6 +87,15 @@ async function TenantSheet({ params }: { params: Promise<{ entityId: string; ten
             Archivage
           </h2>
           <ArchiveTenantForm entityId={entityId} tenantId={tenantId} archived={tenant.archivedAt !== null} />
+        </section>
+      )}
+
+      {permissions.includes('structure:write') && !tenant.anonymizedAt && (
+        <section aria-labelledby="anonymisation" className="grid max-w-xl gap-3">
+          <h2 id="anonymisation" className="text-lg font-semibold">
+            Anonymisation
+          </h2>
+          <AnonymizeTenantForm entityId={entityId} tenantId={tenantId} />
         </section>
       )}
     </div>

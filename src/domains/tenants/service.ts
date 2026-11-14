@@ -13,6 +13,7 @@ export interface Tenant {
   city: string | null
   paperDeliveryRequested: boolean
   archivedAt: string | null
+  anonymizedAt: string | null
 }
 
 export interface PrivateDetails {
@@ -24,7 +25,7 @@ export interface PrivateDetails {
   note: string | null
 }
 
-const COLUMNS = 'id, last_name, first_name, email, phone, address_line1, postal_code, city, paper_delivery_requested, archived_at'
+const COLUMNS = 'id, last_name, first_name, email, phone, address_line1, postal_code, city, paper_delivery_requested, archived_at, anonymized_at'
 
 type Row = {
   id: string
@@ -37,6 +38,7 @@ type Row = {
   city: string | null
   paper_delivery_requested: boolean
   archived_at: string | null
+  anonymized_at: string | null
 }
 
 const toTenant = (r: Row): Tenant => ({
@@ -50,6 +52,7 @@ const toTenant = (r: Row): Tenant => ({
   city: r.city,
   paperDeliveryRequested: r.paper_delivery_requested,
   archivedAt: r.archived_at,
+  anonymizedAt: r.anonymized_at,
 })
 
 export const tenantName = (t: Pick<Tenant, 'lastName' | 'firstName'>) => `${t.firstName} ${t.lastName}`.trim()

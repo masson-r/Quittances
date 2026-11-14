@@ -112,3 +112,20 @@ export async function savePrivateDetailsAction(_: FormState, formData: FormData)
   revalidatePath(tenantPath(key[0], key[1]))
   return { success: 'Informations sensibles enregistrées.' }
 }
+
+/** Anonymisation manuelle d'un dossier (administrateur, trois ans après la fin du dernier bail, apurement final saisi). */
+export async function anonymizeTenantAction(_: FormState, formData: FormData): Promise<FormState> {
+  await requireUser()
+  const key = ids(formData, 'entityId', 'tenantId')
+  if (!key) return { error: 'Dossier inconnu.' }
+  if (formText(formData, 'confirm') !== 'ANONYMISER') return { error: 'Tapez ANONYMISER pour confirmer.' }
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('anonymize_tenant', { p_tenant_id: key[1] })
+  if (error) {
+    if (error.code === '42501') return { error: DENIED }
+    // Les messages de la base expliquent la condition manquante (bail en cours, apurement final, délai de trois ans).
+    return { error: error.message.length < 220 ? error.message : GENERIC }
+  }
+  revalidatePath(tenantPath(key[0], key[1]))
+  return { success: 'Dossier anonymisé. Les baux, paiements et quittances sont conservés.' }
+}
