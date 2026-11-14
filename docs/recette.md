@@ -64,6 +64,8 @@ Revue humaine, une seule fois, sur une quittance et un reçu partiel réels du s
 - [ ] Signature : image nette et bien proportionnée ; mention « signé électroniquement » et identifiant du document.
 - [ ] Mentions de conservation (3 ans) et de gratuité en pied de page ; impression en noir et blanc lisible.
 
+**Validation sur exemples (14 novembre 2026)** : l'utilisateur a validé le rendu de la variante C sur deux PDF d'exemple fictifs produits par le générateur (une quittance de colocation soldée avec signature, un reçu partiel sans signature). Observations connues et acceptées : image de signature proche du trait de signature ; frise des règlements étirée quand il n'y a qu'un règlement ; pied de page en 7 pt. **Reste à confirmer** sur un document réel du staging, y compris à l'impression (cases ci-dessus), avant la signature de la recette.
+
 ## 3. Jalons ouverts (L6-04, tâche humaine)
 
 À lever **avant** l'utilisation réelle, décisions consignées dans des ADR :
