@@ -424,4 +424,5 @@ export const ALLOWED_SECURITY_DEFINER = [
   'app.import_history',
   'app.cancel_import_batch',
   'app.anonymize_tenant',
+  'app.is_active_profile',
 ]
