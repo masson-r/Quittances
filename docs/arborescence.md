@@ -16,7 +16,7 @@ Commandes : `pnpm dev`, `pnpm typecheck`, `pnpm lint`, `pnpm build` ; base local
 
 - `/espace` : accueil, liste des structures dont on est membre.
 - `/espace/<structure>/<section>` : une structure, avec menu (tableau de bord, biens, locataires, baux, échéances et paiements, quittances, dépenses, membres). Une section n'apparaît que si l'utilisateur a la permission de lecture (`public.my_permissions`) ; sinon la page est introuvable.
-- Sections pas encore construites : `SectionPlaceholder` (`src/components/app-shell`), à remplacer ticket par ticket. Une section qui ouvre un nouveau domaine l'ajoute à `NAV_ITEMS` (`src/domains/identity/navigation.ts`).
+- Toutes les sections du menu sont construites.
 - Chaque page de section commence par `requireSection(entityId, slug)` (`src/domains/identity/entity-access.ts`).
 - Mobile (moins de 768 px) : le menu se replie derrière le bouton « Menu ». Tests : `e2e/ui-shell.spec.ts` (axe sur bureau et mobile 390 px).
 

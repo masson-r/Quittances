@@ -59,10 +59,11 @@ test.describe("navigation de l'espace propriétaire", () => {
     await expect(page.getByRole('heading', { name: 'Biens', level: 1 })).toBeVisible()
     await expect(menu.getByRole('link', { name: 'Biens' })).toHaveAttribute('aria-current', 'page')
 
-    // Les sections pas encore construites affichent une mention claire.
+    // Toutes les sections du menu sont construites : plus aucune mention « disponible prochainement ».
     await menu.getByRole('link', { name: 'Quittances' }).click()
     await expect(page.getByRole('heading', { name: 'Quittances', level: 1 })).toBeVisible()
-    await expect(page.getByText('Cette section sera disponible prochainement.').filter({ visible: true })).toHaveCount(1)
+    await expect(page.getByRole('heading', { name: 'Documents émis' })).toBeVisible()
+    await expect(page.getByText('Cette section sera disponible prochainement.')).toHaveCount(0)
   })
 
   test('mobile : le menu se replie derrière un bouton et se referme après un choix', async ({ page }) => {
